@@ -1,12 +1,12 @@
-<div class="p-4">
+<div class="p-2">
     <p-toast></p-toast>
     <p-card header="Clasificador de Información">
 
         <!-- File Upload Section -->
-        <div class="mb-6 text-center border-dashed border-2 border-300 p-5 border-round-xl">
-            <i class="pi pi-file text-4xl text-gray-400 mb-3"></i>
-            <h3 class="text-xl font-medium mb-2">Subir Archivo para Clasificación</h3>
-            <p class="text-gray-600 mb-4">Sube un archivo para extraer preguntas y clasificar las respuestas automáticamente</p>
+        <div class="mb-5 text-center border-dashed border-2 border-300 p-5 border-round-xl surface-50">
+            <i class="pi pi-file text-4xl text-500 mb-3"></i>
+            <h3 class="text-xl font-medium mb-2 text-900">Subir Archivo para Clasificación</h3>
+            <p class="text-600 mb-4">Sube un archivo para extraer preguntas y clasificar las respuestas automáticamente</p>
 
             <p-fileUpload
                 mode="basic"
@@ -23,15 +23,15 @@
 
         <!-- Pending Reviews -->
         <div *ngIf="pendingQuestions().length > 0" class="animation-fade-in">
-            <div class="flex justify-content-between align-items-center mb-4">
-                <h3 class="text-xl font-bold">Respuestas Pendientes de Revisión</h3>
+            <div class="flex justify-content-between align-items-center mb-3">
+                <h3 class="text-xl font-bold text-900 m-0">Respuestas Pendientes de Revisión</h3>
                 <p-tag [value]="pendingQuestions().length.toString() + ' Preguntas'" severity="warn"></p-tag>
             </div>
 
-            <div *ngFor="let question of pendingQuestions()" class="mb-5 surface-card p-4 shadow-1 border-round">
+            <div *ngFor="let question of pendingQuestions()" class="mb-4 surface-card p-4 shadow-2 border-round-lg">
                 <div class="flex justify-content-between align-items-start mb-3">
                     <div>
-                        <h4 class="text-lg font-bold mb-1">{{question.text}}</h4>
+                        <h4 class="text-lg font-bold mb-1 text-900">{{question.text}}</h4>
                         <p-tag value="Pendiente" severity="warning"></p-tag>
                     </div>
                     <div class="flex gap-2">
@@ -40,7 +40,7 @@
                     </div>
                 </div>
 
-                <p-table [value]="question.responses" responsiveLayout="scroll">
+                <p-table [value]="question.responses" responsiveLayout="scroll" styleClass="p-datatable-sm">
                     <ng-template pTemplate="header">
                         <tr>
                             <th>Respuesta</th>
@@ -55,7 +55,7 @@
                             <td><p-tag [value]="response.category" [severity]="response.category === 'Revisión' ? 'warning' : 'success'"></p-tag></td>
                             <td>{{response.sede}}</td>
                             <td>
-                                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text" (click)="openEditDialog(response, question.id)"></button>
+                                <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-text p-button-info" (click)="openEditDialog(response, question.id)"></button>
                             </td>
                         </tr>
                     </ng-template>
@@ -63,38 +63,40 @@
             </div>
         </div>
 
-        <div *ngIf="pendingQuestions().length === 0" class="text-center p-6 text-gray-500">
+        <div *ngIf="pendingQuestions().length === 0" class="text-center p-6 text-500">
             No hay archivos procesados pendientes de revisión.
         </div>
 
     </p-card>
 
     <!-- Edit Dialog -->
-    <p-dialog header="Editar Clasificación" [(visible)]="displayEditDialog" [modal]="true" [style]="{width: '50vw'}" [draggable]="false" [resizable]="false">
-        <div class="p-fluid grid" *ngIf="selectedResponse">
-            <div class="col-12 field">
-                <label>Respuesta</label>
-                <textarea pInputTextarea [(ngModel)]="editModel.response" rows="3" class="w-full p-inputtext p-component"></textarea>
+    <p-dialog header="Editar Clasificación" [(visible)]="displayEditDialog" [modal]="true" [style]="{width: '50vw'}" [draggable]="false" [resizable]="false" styleClass="p-fluid">
+        <div class="grid formgrid p-fluid" *ngIf="selectedResponse">
+            <div class="col-12 field mb-3">
+                <label class="font-medium">Respuesta</label>
+                <textarea pInputTextarea [(ngModel)]="editModel.response" rows="3" class="w-full"></textarea>
             </div>
 
-            <div class="col-12 md:col-6 field">
-                <label>Categoría</label>
-                <p-dropdown [options]="categories()" [(ngModel)]="editModel.category" appendTo="body"></p-dropdown>
+            <div class="col-12 md:col-6 field mb-3">
+                <label class="font-medium">Categoría</label>
+                <p-dropdown [options]="categories()" [(ngModel)]="editModel.category" appendTo="body" styleClass="w-full"></p-dropdown>
             </div>
 
-            <div class="col-12 md:col-6 field">
-                <label>Sede</label>
-                <p-dropdown [options]="sedes" [(ngModel)]="editModel.sede" appendTo="body"></p-dropdown>
+            <div class="col-12 md:col-6 field mb-3">
+                <label class="font-medium">Sede</label>
+                <p-dropdown [options]="sedes" [(ngModel)]="editModel.sede" appendTo="body" styleClass="w-full"></p-dropdown>
             </div>
 
-             <div class="col-12 md:col-6 field">
-                <label>Género</label>
-                <p-dropdown [options]="generos" [(ngModel)]="editModel.genero" appendTo="body"></p-dropdown>
+             <div class="col-12 md:col-6 field mb-3">
+                <label class="font-medium">Género</label>
+                <p-dropdown [options]="generos" [(ngModel)]="editModel.genero" appendTo="body" styleClass="w-full"></p-dropdown>
             </div>
         </div>
         <ng-template pTemplate="footer">
-            <button pButton label="Cancelar" icon="pi pi-times" (click)="displayEditDialog=false" class="p-button-text"></button>
-            <button pButton label="Guardar" icon="pi pi-check" (click)="saveEdit()" class="p-button-text"></button>
+            <div class="flex justify-content-end gap-2">
+                <button pButton label="Cancelar" icon="pi pi-times" (click)="displayEditDialog=false" class="p-button-text"></button>
+                <button pButton label="Guardar" icon="pi pi-check" (click)="saveEdit()" class="p-button-primary"></button>
+            </div>
         </ng-template>
     </p-dialog>
 </div>

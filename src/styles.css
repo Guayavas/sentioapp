@@ -1,8 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* PrimeNG Overrides and Custom Variables from React */
+/* PrimeNG Overrides and Custom Variables */
 :root {
   --primary-color: #00923f;
   --secondary-color: #00923f;
@@ -13,15 +9,28 @@ html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    background-color: #f9fafb; /* gray-50 */
+    background-color: #f9fafb; /* gray-50 equivalent */
     font-family: var(--font-family);
 }
 
-/* Custom Scrollbar hide utility */
-.scrollbar-hide::-webkit-scrollbar {
-    display: none;
+/* Utility to ensure full height */
+.min-h-screen {
+    min-height: 100vh;
 }
-.scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+
+.bg-gray-50 {
+    background-color: #f9fafb;
+}
+
+/* Primary color utilities since PrimeFlex uses surface colors mostly */
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
 }

@@ -1,37 +1,35 @@
-<div class="w-80 bg-white border-r border-gray-200 p-6 h-full flex flex-col">
-    <h2 class="text-xl font-semibold text-gray-900 mb-6">Herramientas</h2>
+<div class="w-18rem bg-white border-right-1 border-gray-200 p-4 h-full flex flex-column">
+    <h2 class="text-xl font-semibold text-900 mb-4 px-2">Herramientas</h2>
 
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-column gap-2">
         <button pButton
                 label="Explorador de Datos"
                 icon="pi pi-eye"
                 routerLink="/app/explorer"
-                routerLinkActive="bg-[#00923f] text-white hover:bg-green-700"
-                class="p-button-text justify-content-start w-full text-gray-700 hover:bg-gray-100 text-left px-3 py-3"
-                [ngClass]="{'bg-[#00923f] text-white': false}">
-                <!-- Note: RouterLinkActive class handling with PrimeNG button might need cleaner CSS or custom directive, using basic approach here -->
+                routerLinkActive="bg-primary text-white"
+                class="p-button-text justify-content-start w-full text-700 hover:bg-gray-100 text-left px-3 py-3 border-round">
         </button>
 
         <button pButton
                 label="Gráficos"
                 icon="pi pi-chart-bar"
                 disabled="true"
-                class="p-button-text justify-content-start w-full text-gray-400 cursor-not-allowed text-left px-3 py-3">
+                class="p-button-text justify-content-start w-full text-400 cursor-not-allowed text-left px-3 py-3 border-round">
         </button>
 
         <button pButton
                 label="Clasificador de Información"
                 icon="pi pi-cog"
                 routerLink="/app/classifier"
-                routerLinkActive="bg-[#00923f] text-white hover:bg-green-700"
-                class="p-button-text justify-content-start w-full text-gray-700 hover:bg-gray-100 text-left px-3 py-3">
+                routerLinkActive="bg-primary text-white"
+                class="p-button-text justify-content-start w-full text-700 hover:bg-gray-100 text-left px-3 py-3 border-round">
         </button>
 
         <button pButton
                 label="Banco de Datos"
                 icon="pi pi-database"
                 disabled="true"
-                class="p-button-text justify-content-start w-full text-gray-400 cursor-not-allowed text-left px-3 py-3">
+                class="p-button-text justify-content-start w-full text-400 cursor-not-allowed text-left px-3 py-3 border-round">
         </button>
     </div>
 </div>
