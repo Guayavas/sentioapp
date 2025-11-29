@@ -1,19 +1,19 @@
-<header class="bg-primary p-3 shadow-2 z-5 relative">
-    <div class="flex align-items-center justify-content-between px-4">
+<header class="app-header">
+    <div class="header-container">
       <!-- Logo -->
-      <div class="flex align-items-center gap-3">
-          <i class="pi pi-verified text-white text-3xl"></i>
-        <div>
-          <h1 class="text-xl font-semibold text-white m-0">SentioApp</h1>
-          <p class="text-sm text-white-alpha-80 m-0">Bienestar Estudiantil</p>
+      <div class="logo-section">
+          <i class="pi pi-verified"></i>
+        <div class="brand-info">
+          <h1>SentioApp</h1>
+          <p>Bienestar Estudiantil</p>
         </div>
       </div>
 
-      <!-- Navigation -->
-      <nav class="flex align-items-center gap-2">
-          <button pButton label="Inicio" icon="pi pi-home" routerLink="/app/home" class="p-button-text text-white hover:surface-white hover:text-primary transition-colors transition-duration-200"></button>
-          <button pButton label="Perfil" icon="pi pi-user" routerLink="/app/profile" class="p-button-text text-white hover:surface-white hover:text-primary transition-colors transition-duration-200"></button>
-          <button pButton label="Cerrar Sesión" icon="pi pi-sign-out" (click)="logout()" class="p-button-text text-white hover:surface-white hover:text-primary transition-colors transition-duration-200"></button>
+      <!-- Navegación -->
+      <nav class="nav-section">
+          <button pButton label="Inicio" icon="pi pi-home" routerLink="/app/home" class="p-button-text"></button>
+          <button pButton label="Perfil" icon="pi pi-user" routerLink="/app/profile" class="p-button-text"></button>
+          <button pButton label="Cerrar Sesión" icon="pi pi-sign-out" (click)="logout()" class="p-button-text"></button>
       </nav>
     </div>
 </header>

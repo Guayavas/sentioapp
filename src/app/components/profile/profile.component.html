@@ -1,73 +1,73 @@
-<div class="max-w-30rem mx-auto flex flex-column gap-4 animation-fade-in p-2">
+<div class="profile-container">
     <p-toast></p-toast>
 
-    <!-- Profile Header -->
+    <!-- Encabezado de Perfil -->
     <p-card styleClass="shadow-2 border-round-xl">
-        <div class="flex flex-column align-items-center text-center">
-            <div class="relative mb-3">
+        <div class="profile-header-content">
+            <div class="avatar-wrapper">
                 <p-avatar
                     [label]="getInitials(user.name)"
                     size="xlarge"
                     shape="circle"
                     styleClass="w-6rem h-6rem text-3xl bg-green-100 text-green-800">
                 </p-avatar>
-                <button *ngIf="isEditing" pButton icon="pi pi-camera" class="p-button-rounded p-button-secondary p-button-sm absolute bottom-0 right-0 shadow-2" style="transform: translate(25%, 25%)"></button>
+                <button *ngIf="isEditing" pButton icon="pi pi-camera" class="p-button-rounded p-button-secondary p-button-sm edit-avatar-btn"></button>
             </div>
             <div>
-                <h2 class="text-2xl font-bold text-900 m-0">{{user.name}}</h2>
-                <p class="text-600 m-0 mt-1">{{user.program}}</p>
+                <h2 class="user-name">{{user.name}}</h2>
+                <p class="user-program">{{user.program}}</p>
             </div>
         </div>
     </p-card>
 
-    <!-- Personal Info -->
+    <!-- Información Personal -->
     <p-card styleClass="shadow-2 border-round-xl">
         <ng-template pTemplate="header">
-            <div class="flex align-items-center justify-content-between px-4 pt-4 pb-0">
-                <h3 class="text-lg font-bold m-0 text-900">Información Personal</h3>
+            <div class="card-header-flex">
+                <h3 class="section-title">Información Personal</h3>
 
                 <p-button *ngIf="!isEditing" label="Editar Perfil" (click)="toggleEdit()" styleClass="p-button-outlined p-button-sm"></p-button>
 
-                <div *ngIf="isEditing" class="flex gap-2">
+                <div *ngIf="isEditing" class="action-buttons">
                     <p-button label="Cancelar" (click)="toggleEdit()" styleClass="p-button-text p-button-secondary p-button-sm"></p-button>
                     <p-button label="Guardar" icon="pi pi-save" (click)="saveChanges()" styleClass="p-button-sm"></p-button>
                 </div>
             </div>
         </ng-template>
 
-        <div class="grid formgrid p-fluid mt-3">
-            <div class="col-12 md:col-6 field mb-3">
-                <label class="block text-700 font-medium mb-2">Nombre Completo</label>
-                <input pInputText [(ngModel)]="user.name" [disabled]="!isEditing" class="w-full" [ngClass]="{'surface-100': !isEditing}">
+        <div class="form-grid">
+            <div class="form-col">
+                <label class="form-label">Nombre Completo</label>
+                <input pInputText [(ngModel)]="user.name" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
             </div>
-            <div class="col-12 md:col-6 field mb-3">
-                <label class="block text-700 font-medium mb-2">Correo Electrónico</label>
-                <input pInputText [(ngModel)]="user.email" [disabled]="!isEditing" class="w-full" [ngClass]="{'surface-100': !isEditing}">
+            <div class="form-col">
+                <label class="form-label">Correo Electrónico</label>
+                <input pInputText [(ngModel)]="user.email" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
             </div>
-            <div class="col-12 md:col-6 field mb-3">
-                <label class="block text-700 font-medium mb-2">Teléfono</label>
-                <input pInputText [(ngModel)]="user.phone" [disabled]="!isEditing" placeholder="Ingresa tu teléfono" class="w-full" [ngClass]="{'surface-100': !isEditing}">
+            <div class="form-col">
+                <label class="form-label">Teléfono</label>
+                <input pInputText [(ngModel)]="user.phone" [disabled]="!isEditing" placeholder="Ingresa tu teléfono" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
             </div>
-            <div class="col-12 md:col-6 field mb-3">
-                <label class="block text-700 font-medium mb-2">ID</label>
-                <input pInputText [(ngModel)]="user.studentId" [disabled]="!isEditing" class="w-full" [ngClass]="{'surface-100': !isEditing}">
+            <div class="form-col">
+                <label class="form-label">ID</label>
+                <input pInputText [(ngModel)]="user.studentId" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
             </div>
         </div>
     </p-card>
 
-    <!-- Change Password (Only in Edit Mode) -->
+    <!-- Cambio de Contraseña (Solo en Modo Edición) -->
     <p-card *ngIf="isEditing" header="Cambiar Contraseña" styleClass="shadow-2 border-round-xl">
-        <div class="grid formgrid p-fluid">
-            <div class="col-12 field mb-3">
-                <label class="block text-700 font-medium mb-2">Contraseña Actual</label>
+        <div class="form-grid-single">
+            <div class="form-field">
+                <label class="form-label">Contraseña Actual</label>
                 <p-password [(ngModel)]="passwords.current" [feedback]="false" toggleMask="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
             </div>
-            <div class="col-12 field mb-3">
-                <label class="block text-700 font-medium mb-2">Nueva Contraseña</label>
+            <div class="form-field">
+                <label class="form-label">Nueva Contraseña</label>
                 <p-password [(ngModel)]="passwords.new" [feedback]="true" toggleMask="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
             </div>
-            <div class="col-12 field mb-3">
-                <label class="block text-700 font-medium mb-2">Confirmar Nueva Contraseña</label>
+            <div class="form-field">
+                <label class="form-label">Confirmar Nueva Contraseña</label>
                 <p-password [(ngModel)]="passwords.confirm" [feedback]="false" toggleMask="true" styleClass="w-full" inputStyleClass="w-full"></p-password>
             </div>
         </div>

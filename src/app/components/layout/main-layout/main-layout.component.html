@@ -1,10 +1,10 @@
-<div class="min-h-screen flex flex-column bg-gray-50">
+<div class="layout-container">
     <app-header></app-header>
 
-    <div class="flex flex-1 overflow-hidden">
-        <app-sidebar class="hidden md:flex flex-shrink-0"></app-sidebar>
+    <div class="layout-content-wrapper">
+        <app-sidebar></app-sidebar>
 
-        <main class="flex-1 p-4 overflow-y-auto">
+        <main class="layout-main">
             <router-outlet></router-outlet>
         </main>
     </div>

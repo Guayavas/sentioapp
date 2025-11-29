@@ -6,9 +6,6 @@ import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import { LayoutComponent } from '../layout/layout.component';
-import { HeaderComponent } from '../layout/header/header.component'; // Will create this later
-import { FooterComponent } from '../layout/footer/footer.component'; // Will create this later
 
 @Component({
   selector: 'app-login',
@@ -25,7 +22,7 @@ export class LoginComponent {
 
   login() {
     if (this.username && this.password) {
-      // Mock login - in real app use AuthService
+      // Simulación de inicio de sesión - en una app real usar AuthService
       localStorage.setItem('user', this.username);
       this.router.navigate(['/app/home']);
     }
