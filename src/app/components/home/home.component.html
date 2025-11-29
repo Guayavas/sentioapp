@@ -1,28 +1,48 @@
-<div class="p-4">
-    <div class="grid">
-        <div class="col-12 text-center mb-6">
-            <h1 class="text-4xl text-primary font-bold">Bienvenido a SentioApp</h1>
-            <p class="text-xl text-gray-600">Sistema de Gestión de Bienestar Estudiantil</p>
-        </div>
+<div class="p-4 animation-fade-in h-full flex flex-column justify-content-center">
+    <!-- Welcome Header -->
+    <div class="text-center mb-6">
+        <h1 class="text-4xl font-bold text-900 mb-2">Bienvenido a SentioApp</h1>
+        <p class="text-xl text-600">Sistema de Gestión de Bienestar Estudiantil</p>
+    </div>
 
-        <div class="col-12 md:col-6">
-            <p-card header="Explorador de Datos" styleClass="h-full hover:shadow-4 cursor-pointer transition-duration-200" [style]="{height: '100%'}">
-                <p class="m-0 mb-4">
-                    Visualiza y analiza las respuestas de los estudiantes clasificadas por categorías. Utiliza filtros avanzados para encontrar información específica.
-                </p>
+    <!-- Cards Grid -->
+    <div class="grid p-fluid">
+        <!-- Explorador Card -->
+        <div class="col-12 md:col-6 p-3">
+            <p-card styleClass="h-full shadow-2 border-round-xl hover:shadow-4 transition-all transition-duration-200 cursor-pointer surface-card">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-3 px-4 pt-4">
+                        <div class="border-circle bg-green-100 p-3 flex align-items-center justify-content-center">
+                            <i class="pi pi-eye text-2xl text-green-700"></i>
+                        </div>
+                        <h2 class="text-xl font-bold m-0 text-900">Explorador de Datos</h2>
+                    </div>
+                </ng-template>
+                <div class="py-3 text-700 line-height-3">
+                    Visualiza y analiza las respuestas de los estudiantes clasificadas por categorías. Utiliza filtros avanzados para encontrar información específica por sede, género y más.
+                </div>
                 <ng-template pTemplate="footer">
-                    <button pButton label="Acceder" icon="pi pi-search" routerLink="/explorer"></button>
+                    <button pButton label="Acceder" icon="pi pi-arrow-right" iconPos="right" routerLink="/app/explorer" class="w-full bg-primary border-primary"></button>
                 </ng-template>
             </p-card>
         </div>
 
-        <div class="col-12 md:col-6">
-            <p-card header="Clasificador de Información" styleClass="h-full hover:shadow-4 cursor-pointer transition-duration-200" [style]="{height: '100%'}">
-                <p class="m-0 mb-4">
-                    Carga nuevos archivos de encuestas o documentos. El sistema procesará y pre-clasificará las respuestas para tu revisión y aprobación.
-                </p>
+        <!-- Clasificador Card -->
+        <div class="col-12 md:col-6 p-3">
+            <p-card styleClass="h-full shadow-2 border-round-xl hover:shadow-4 transition-all transition-duration-200 cursor-pointer surface-card">
+                <ng-template pTemplate="header">
+                    <div class="flex align-items-center gap-3 px-4 pt-4">
+                        <div class="border-circle bg-green-100 p-3 flex align-items-center justify-content-center">
+                            <i class="pi pi-cog text-2xl text-green-700"></i>
+                        </div>
+                        <h2 class="text-xl font-bold m-0 text-900">Clasificador de Información</h2>
+                    </div>
+                </ng-template>
+                <div class="py-3 text-700 line-height-3">
+                    Carga nuevos archivos de encuestas o documentos. El sistema procesará y pre-clasificará las respuestas automáticamente para tu revisión y aprobación manual.
+                </div>
                 <ng-template pTemplate="footer">
-                    <button pButton label="Acceder" icon="pi pi-cog" routerLink="/classifier" class="p-button-success"></button>
+                    <button pButton label="Acceder" icon="pi pi-arrow-right" iconPos="right" routerLink="/app/classifier" class="w-full bg-primary border-primary"></button>
                 </ng-template>
             </p-card>
         </div>
