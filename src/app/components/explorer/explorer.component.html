@@ -1,0 +1,93 @@
+<div class="p-4">
+    <p-card header="Explorador de Datos">
+        <div class="grid p-fluid">
+            <!-- Search Question -->
+            <div class="col-12 mb-4">
+                <label class="block font-bold mb-2">Buscar y Seleccionar Pregunta:</label>
+                <p-autoComplete
+                    [(ngModel)]="selectedQuestion"
+                    [suggestions]="filteredQuestions"
+                    (completeMethod)="filterQuestions($event)"
+                    field="text"
+                    [dropdown]="true"
+                    placeholder="Escribe para buscar..."
+                    styleClass="w-full">
+                </p-autoComplete>
+            </div>
+
+            <!-- Current Question Banner -->
+             <div class="col-12 mb-4" *ngIf="selectedQuestion">
+                <div class="bg-green-600 text-white p-4 border-round-xl">
+                    <div class="font-bold text-lg mb-2">Pregunta Actual:</div>
+                    <div class="text-xl mb-3">{{selectedQuestion.text}}</div>
+                    <div class="flex gap-2">
+                        <p-tag [value]="selectedQuestion.category" severity="secondary"></p-tag>
+                        <p-tag [value]="selectedQuestion.status || 'active'" severity="success"></p-tag>
+                    </div>
+                </div>
+             </div>
+
+            <!-- Filters -->
+            <div class="col-12 md:col-6 mb-3">
+                <label class="block mb-2">Filtrar por Sede:</label>
+                <p-dropdown [options]="sedes" [(ngModel)]="selectedSede" placeholder="Todas las sedes" [showClear]="true" styleClass="w-full"></p-dropdown>
+            </div>
+            <div class="col-12 md:col-6 mb-3">
+                <label class="block mb-2">Filtrar por Género:</label>
+                <p-dropdown [options]="generos" [(ngModel)]="selectedGenero" placeholder="Todos los géneros" [showClear]="true" styleClass="w-full"></p-dropdown>
+            </div>
+        </div>
+
+        <!-- Categories Navigation -->
+        <div class="flex overflow-x-auto gap-2 py-3 mb-4 border-bottom-1 border-200">
+            <div *ngFor="let cat of categories()" class="relative">
+                <button
+                    pButton
+                    type="button"
+                    [label]="cat"
+                    [outlined]="activeCategory !== cat"
+                    [class.bg-green-100]="activeCategory === cat"
+                    [class.text-green-800]="activeCategory === cat"
+                    (click)="setActiveCategory(cat)"
+                    class="white-space-nowrap pr-5">
+                </button>
+                <p-badge
+                    [value]="getCategoryCount(cat).toString()"
+                    severity="contrast"
+                    styleClass="absolute top-0 right-0 -mt-1 -mr-1">
+                </p-badge>
+            </div>
+        </div>
+
+        <!-- Results Table -->
+        <div class="mt-4">
+            <h3 class="text-lg font-bold mb-3">Respuestas en {{activeCategory}} ({{responses().length}})</h3>
+
+            <p-table [value]="responses()" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="5">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Respuesta</th>
+                        <th>Categoría</th>
+                        <th>Sede</th>
+                        <th>Género</th>
+                        <th>Fecha</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-response>
+                    <tr>
+                        <td>{{ response.response }}</td>
+                        <td><p-tag [value]="response.category" [severity]="getSeverity(response.category)"></p-tag></td>
+                        <td>{{ response.sede }}</td>
+                        <td>{{ response.genero }}</td>
+                        <td>{{ response.date }}</td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5" class="text-center p-4">No hay respuestas que coincidan con los filtros.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </p-card>
+</div>
