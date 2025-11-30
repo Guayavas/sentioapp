@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { Pregunta, Respuesta } from '../../models/data.models';
 
-// PrimeNG Modules
+// Módulos de PrimeNG
 import { FileUploadModule } from 'primeng/fileupload';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -40,16 +40,16 @@ export class ClassifierComponent {
   dataService = inject(DataService);
   messageService = inject(MessageService);
 
-  // Signals
+  // Señales
   pendingQuestions = this.dataService.preguntasPendientes;
   categories = this.dataService.categories;
 
-  // Edit Dialog State
+  // Estado del diálogo de edición
   displayEditDialog: boolean = false;
   selectedResponse: Respuesta | null = null;
   selectedQuestionId: number | null = null;
 
-  // Edit Form Model
+  // Modelo del formulario de edición
   editModel: any = {};
 
   sedes = ['CENTRO', 'VIPRI', 'FACARTES', 'TOROBAJO', 'OTRO'];
@@ -64,7 +64,7 @@ export class ClassifierComponent {
   openEditDialog(response: Respuesta, questionId: number) {
       this.selectedResponse = response;
       this.selectedQuestionId = questionId;
-      this.editModel = { ...response }; // Clone
+      this.editModel = { ...response }; // Clonar objeto
       this.displayEditDialog = true;
   }
 

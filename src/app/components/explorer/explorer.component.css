@@ -1,0 +1,118 @@
+.explorer-container {
+    padding: 0.5rem;
+}
+
+.h-full {
+    height: 100%;
+}
+
+.filters-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.filter-row {
+    grid-column: 1 / -1;
+    margin-bottom: 1rem;
+}
+
+.filter-col {
+    margin-bottom: 1rem;
+}
+
+@media screen and (min-width: 768px) {
+    .filters-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.question-banner {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.banner-label {
+    font-weight: 700;
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+}
+
+.banner-text {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.banner-tags {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.label-bold {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.label-medium {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.w-full {
+    width: 100%;
+}
+
+.categories-nav {
+    display: flex;
+    overflow-x: auto;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--surface-border);
+}
+
+.category-item {
+    position: relative;
+    margin-right: 1rem;
+}
+
+.category-button {
+    white-space: nowrap;
+    padding-right: 2.5rem !important; /* Espacio para el badge */
+}
+
+/* Estilo activo para categoría */
+.category-button.active {
+    background-color: var(--green-100) !important;
+    color: var(--green-800) !important;
+    border-color: var(--green-500) !important;
+}
+
+.category-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin-top: -0.5rem;
+    margin-right: -0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.results-section {
+    margin-top: 1.5rem;
+}
+
+.results-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+:host ::ng-deep .p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
+    background-color: var(--surface-50);
+}

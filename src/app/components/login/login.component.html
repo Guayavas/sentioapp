@@ -1,0 +1,46 @@
+<div class="login-container">
+  <!-- Header -->
+  <header class="login-header">
+      <div class="header-content">
+          <i class="pi pi-verified text-white text-3xl"></i>
+          <div class="brand-text">
+            <h1>SentioApp</h1>
+            <p>Bienestar Estudiantil</p>
+          </div>
+      </div>
+  </header>
+
+  <!-- Main Content Centered -->
+  <main class="login-content">
+    <p-card>
+      <ng-template pTemplate="header">
+          <div class="text-center pt-5 pb-2">
+              <h2 class="text-2xl font-bold m-0 mb-2" style="color: var(--text-color);">Iniciar Sesión</h2>
+              <p class="text-600 m-0">Accede al sistema de bienestar estudiantil</p>
+          </div>
+      </ng-template>
+
+      <div class="form-container">
+        <div class="form-field">
+          <label for="username" class="form-label">Usuario</label>
+          <input pInputText id="username" [(ngModel)]="username" placeholder="Ingresa tu usuario" class="w-full" />
+        </div>
+        <div class="form-field">
+          <label for="password" class="form-label">Contraseña</label>
+          <p-password id="password" [(ngModel)]="password" [feedback]="false" placeholder="••••••••" styleClass="w-full" inputStyleClass="w-full"></p-password>
+        </div>
+        <div class="mt-2">
+            <p-button label="Iniciar Sesión" (click)="login()" styleClass="login-button"></p-button>
+        </div>
+      </div>
+    </p-card>
+  </main>
+
+  <!-- Footer -->
+  <footer class="login-footer">
+      <div class="footer-content">
+        <p class="copyright">© 2025 Universidad de Nariño - SentioApp</p>
+        <p class="rights">Todos los derechos reservados. Sistema de Gestión de Bienestar Estudiantil</p>
+      </div>
+  </footer>
+</div>

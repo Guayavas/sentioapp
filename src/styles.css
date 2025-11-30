@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+/* PrimeNG Overrides and Custom Variables */
+:root {
+  --primary-color: #00923f;
+  --secondary-color: #00923f;
+  --font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Text Colors for Light Theme */
+  --text-color: #374151; /* gray-700 */
+  --text-color-secondary: #6b7280; /* gray-500 */
+
+  /* Surface Colors for Light Theme */
+  --surface-card: #ffffff;
+  --surface-ground: #f9fafb;
+  --surface-border: #dfe7ef;
+
+  /* Colors for success/warning/etc if needed by PrimeNG but usually theme handles it.
+     We define these to be safe if theme vars are missing */
+  --green-100: #dcfce7;
+  --green-700: #15803d;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-color: var(--surface-ground); /* gray-50 equivalent */
+    font-family: var(--font-family);
+    color: var(--text-color); /* Set default text color */
+}
+
+/* Utility to ensure full height */
+.min-h-screen {
+    min-height: 100vh;
+}
+
+.bg-gray-50 {
+    background-color: #f9fafb;
+}
+
+/* Primary color utilities since PrimeFlex uses surface colors mostly */
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-color) !important;
+}

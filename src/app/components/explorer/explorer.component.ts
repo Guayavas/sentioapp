@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
 import { Pregunta, Respuesta } from '../../models/data.models';
 
-// PrimeNG Modules
+// Módulos de PrimeNG
 import { TableModule } from 'primeng/table';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
@@ -37,13 +37,13 @@ import { BadgeModule } from 'primeng/badge';
 export class ExplorerComponent {
   dataService = inject(DataService);
 
-  // Signals for state
+  // Señales para el estado
   preguntas = this.dataService.preguntas;
   categories = this.dataService.categories;
 
-  // Filters
+  // Filtros
   selectedQuestion: Pregunta | null = null;
-  filteredQuestions: Pregunta[] = []; // For autocomplete
+  filteredQuestions: Pregunta[] = []; // Para autocompletar
 
   selectedSede: string | null = null;
   sedes = ['CENTRO', 'VIPRI', 'FACARTES', 'TOROBAJO', 'OTRO'];
@@ -53,7 +53,7 @@ export class ExplorerComponent {
 
   activeCategory: string = 'Familiar';
 
-  // Computed filtered responses
+  // Respuestas filtradas calculadas (Computed)
   responses = computed(() => {
     if (!this.selectedQuestion) return [];
 
@@ -67,7 +67,7 @@ export class ExplorerComponent {
   });
 
   constructor() {
-      // Select first question by default if available
+      // Seleccionar la primera pregunta por defecto si está disponible
       if (this.preguntas().length > 0) {
           this.selectedQuestion = this.preguntas()[0];
       }
