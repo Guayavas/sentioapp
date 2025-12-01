@@ -1,0 +1,30 @@
+.layout-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface-ground);
+}
+
+.layout-content-wrapper {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.layout-main {
+    flex: 1;
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+/* Ocultar sidebar en móviles por defecto, mostrar en desktop */
+app-sidebar {
+    display: none;
+}
+
+@media screen and (min-width: 768px) {
+    app-sidebar {
+        display: flex;
+        flex-shrink: 0;
+    }
+}
