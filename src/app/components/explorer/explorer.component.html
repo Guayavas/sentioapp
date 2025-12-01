@@ -1,92 +1,59 @@
-<div class="explorer-container">
-    <p-card header="Explorador de Datos" styleClass="h-full">
-        <div class="filters-grid">
-            <!-- Buscar Pregunta -->
-            <div class="filter-row">
-                <label class="label-bold">Buscar y Seleccionar Pregunta:</label>
-                <p-autoComplete
-                    [(ngModel)]="selectedQuestion"
-                    [suggestions]="filteredQuestions"
-                    (completeMethod)="filterQuestions($event)"
-                    field="text"
-                    [dropdown]="true"
-                    placeholder="Escribe para buscar..."
-                    styleClass="w-full">
-                </p-autoComplete>
+<div class="flex h-full gap-4 p-4">
+    <!-- Sidebar / Tree Hierarchy -->
+    <div class="w-4">
+        <p-card header="Estructura de Datos" styleClass="h-full">
+            <div class="flex justify-content-end mb-2">
+                <p-button icon="pi pi-refresh" (onClick)="refresh()" [text]="true"></p-button>
             </div>
+            <p-tree
+                [value]="nodes()"
+                selectionMode="single"
+                [(selection)]="selectedNode"
+                (onNodeSelect)="onNodeSelect($event)"
+                [filter]="true"
+                filterPlaceholder="Buscar..."
+                [loading]="loading"
+                scrollHeight="600px">
+            </p-tree>
+        </p-card>
+    </div>
 
-            <!-- Banner de Pregunta Actual -->
-             <div class="filter-row" *ngIf="selectedQuestion">
-                <div class="question-banner">
-                    <div class="banner-label">Pregunta Actual:</div>
-                    <div class="banner-text">{{selectedQuestion.text}}</div>
-                    <div class="banner-tags">
-                        <p-tag [value]="selectedQuestion.category" severity="secondary"></p-tag>
-                        <p-tag [value]="selectedQuestion.status || 'active'" severity="success"></p-tag>
-                    </div>
-                </div>
-             </div>
+    <!-- Main Content / Responses Table -->
+    <div class="w-8">
+        <p-card header="Respuestas" styleClass="h-full">
+            <ng-template pTemplate="subtitle">
+                <span *ngIf="selectedNode?.leaf">{{ selectedNode?.label }}</span>
+                <span *ngIf="!selectedNode?.leaf">Seleccione una pregunta para ver las respuestas</span>
+            </ng-template>
 
-            <!-- Filtros -->
-            <div class="filter-col">
-                <label class="label-medium">Filtrar por Sede:</label>
-                <p-dropdown [options]="sedes" [(ngModel)]="selectedSede" placeholder="Todas las sedes" [showClear]="true" styleClass="w-full"></p-dropdown>
-            </div>
-            <div class="filter-col">
-                <label class="label-medium">Filtrar por Género:</label>
-                <p-dropdown [options]="generos" [(ngModel)]="selectedGenero" placeholder="Todos los géneros" [showClear]="true" styleClass="w-full"></p-dropdown>
-            </div>
-        </div>
-
-        <!-- Navegación de Categorías -->
-        <div class="categories-nav">
-            <div *ngFor="let cat of categories()" class="category-item">
-                <button
-                    pButton
-                    type="button"
-                    [label]="cat"
-                    [outlined]="activeCategory !== cat"
-                    [ngClass]="{'active': activeCategory === cat, 'p-button-outlined': activeCategory !== cat}"
-                    class="category-button"
-                    (click)="setActiveCategory(cat)">
-                </button>
-                <p-badge
-                    [value]="getCategoryCount(cat).toString()"
-                    severity="contrast"
-                    styleClass="category-badge">
-                </p-badge>
-            </div>
-        </div>
-
-        <!-- Tabla de Resultados -->
-        <div class="results-section">
-            <h3 class="results-title">Respuestas en {{activeCategory}} ({{responses().length}})</h3>
-
-            <p-table [value]="responses()" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="5" styleClass="p-datatable-striped">
+            <p-table
+                [value]="responses()"
+                [paginator]="true"
+                [rows]="10"
+                styleClass="p-datatable-sm"
+                [showCurrentPageReport]="true">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Respuesta</th>
-                        <th>Categoría</th>
-                        <th>Sede</th>
+                        <th style="width: 40%">Respuesta</th>
+                        <th>Programa</th>
                         <th>Género</th>
-                        <th>Fecha</th>
+                        <th>Sede</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-response>
                     <tr>
-                        <td>{{ response.response }}</td>
-                        <td><p-tag [value]="response.category" [severity]="getSeverity(response.category)"></p-tag></td>
-                        <td>{{ response.sede }}</td>
-                        <td>{{ response.genero }}</td>
-                        <td>{{ response.date }}</td>
+                        <td>{{ response.responseText }}</td>
+                        <td><p-tag [value]="response.programa" severity="info"></p-tag></td>
+                        <td>{{ response.sexoBiologico }}</td>
+                        <td>{{ response.universidad }}</td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="5" class="text-center p-4 text-500">No hay respuestas que coincidan con los filtros.</td>
+                        <td colspan="4" class="text-center p-4">No hay respuestas disponibles.</td>
                     </tr>
                 </ng-template>
             </p-table>
-        </div>
-    </p-card>
+        </p-card>
+    </div>
 </div>

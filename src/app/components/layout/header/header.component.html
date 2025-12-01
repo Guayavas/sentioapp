@@ -1,19 +1,11 @@
-<header class="app-header">
-    <div class="header-container">
-      <!-- Logo -->
-      <div class="logo-section">
-          <i class="pi pi-verified"></i>
-        <div class="brand-info">
-          <h1>SentioApp</h1>
-          <p>Bienestar Estudiantil</p>
-        </div>
-      </div>
-
-      <!-- Navegación -->
-      <nav class="nav-section">
-          <button pButton label="Inicio" icon="pi pi-home" routerLink="/app/home" class="p-button-text"></button>
-          <button pButton label="Perfil" icon="pi pi-user" routerLink="/app/profile" class="p-button-text"></button>
-          <button pButton label="Cerrar Sesión" icon="pi pi-sign-out" (click)="logout()" class="p-button-text"></button>
-      </nav>
+<header class="flex justify-content-between align-items-center px-4 py-2 bg-primary text-white shadow-2">
+    <div class="flex align-items-center gap-2">
+        <i class="pi pi-briefcase text-2xl"></i>
+        <span class="text-xl font-bold">Gestor de Materia</span>
+    </div>
+    <div class="flex align-items-center gap-2">
+        <span class="mr-2">Bienvenido, Usuario</span>
+        <p-button label="Importar" icon="pi pi-upload" styleClass="p-button-secondary p-button-sm" (onClick)="onUploadClick.emit()"></p-button>
+        <p-button label="Cerrar Sesión" icon="pi pi-sign-out" styleClass="p-button-danger p-button-text text-white" (onClick)="logout()"></p-button>
     </div>
 </header>

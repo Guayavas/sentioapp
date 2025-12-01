@@ -1,19 +1,16 @@
-import { Component, inject, Signal, computed, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { Pregunta, Respuesta } from '../../models/data.models';
+import { HierarchyNode, Response } from '../../models/data.models';
 
 // Módulos de PrimeNG
+import { TreeModule } from 'primeng/tree';
 import { TableModule } from 'primeng/table';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { ChipModule } from 'primeng/chip';
+import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
-import { AutoCompleteModule } from 'primeng/autocomplete';
-import { BadgeModule } from 'primeng/badge';
+import { TreeNode } from 'primeng/api';
 
 @Component({
   selector: 'app-explorer',
@@ -21,79 +18,64 @@ import { BadgeModule } from 'primeng/badge';
   imports: [
     CommonModule,
     FormsModule,
+    TreeModule,
     TableModule,
-    DropdownModule,
-    InputTextModule,
-    ButtonModule,
     CardModule,
-    ChipModule,
-    TagModule,
-    AutoCompleteModule,
-    BadgeModule
+    ButtonModule,
+    TagModule
   ],
   templateUrl: './explorer.component.html',
   styleUrl: './explorer.component.css'
 })
-export class ExplorerComponent {
+export class ExplorerComponent implements OnInit {
   dataService = inject(DataService);
 
-  // Señales para el estado
-  preguntas = this.dataService.preguntas;
-  categories = this.dataService.categories;
+  // Data Signals
+  nodes = signal<TreeNode[]>([]);
+  responses = this.dataService.currentResponses;
+  selectedNode: TreeNode | null = null;
+  loading = false;
 
-  // Filtros
-  selectedQuestion: Pregunta | null = null;
-  filteredQuestions: Pregunta[] = []; // Para autocompletar
+  ngOnInit() {
+    this.loadHierarchy();
+  }
 
-  selectedSede: string | null = null;
-  sedes = ['CENTRO', 'VIPRI', 'FACARTES', 'TOROBAJO', 'OTRO'];
-
-  selectedGenero: string | null = null;
-  generos = ['Masculino', 'Femenino', 'Otro', 'No especifica'];
-
-  activeCategory: string = 'Familiar';
-
-  // Respuestas filtradas calculadas (Computed)
-  responses = computed(() => {
-    if (!this.selectedQuestion) return [];
-
-    return this.selectedQuestion.responses.filter(r => {
-        const categoryMatch = r.category === this.activeCategory;
-        const sedeMatch = !this.selectedSede || r.sede === this.selectedSede;
-        const generoMatch = !this.selectedGenero || r.genero === this.selectedGenero;
-
-        return categoryMatch && sedeMatch && generoMatch;
+  loadHierarchy() {
+    this.loading = true;
+    this.dataService.getHierarchy().subscribe({
+      next: (data) => {
+        this.nodes.set(this.transformToTreeNodes(data));
+        this.loading = false;
+      },
+      error: () => this.loading = false
     });
-  });
-
-  constructor() {
-      // Seleccionar la primera pregunta por defecto si está disponible
-      if (this.preguntas().length > 0) {
-          this.selectedQuestion = this.preguntas()[0];
-      }
   }
 
-  filterQuestions(event: any) {
-    const query = event.query.toLowerCase();
-    this.filteredQuestions = this.preguntas().filter(q => q.text.toLowerCase().includes(query));
+  // Transform backend DTO to PrimeNG TreeNode
+  transformToTreeNodes(data: HierarchyNode[]): TreeNode[] {
+    return data.map(cat => ({
+      key: cat.key,
+      label: cat.label,
+      expandedIcon: 'pi pi-folder-open',
+      collapsedIcon: 'pi pi-folder',
+      children: cat.children?.map(q => ({
+        key: q.key,
+        label: q.label,
+        icon: 'pi pi-question-circle',
+        data: q.data, // This is the QuestionId
+        leaf: true
+      }))
+    }));
   }
 
-  setActiveCategory(cat: string) {
-      this.activeCategory = cat;
+  onNodeSelect(event: any) {
+    if (event.node.leaf) {
+      const questionId = event.node.data;
+      this.dataService.getResponses(questionId).subscribe();
+    }
   }
 
-  getCategoryCount(cat: string): number {
-      if (!this.selectedQuestion) return 0;
-      return this.selectedQuestion.responses.filter(r => r.category === cat).length;
-  }
-
-  getSeverity(category: string): "success" | "info" | "warn" | "danger" | "secondary" | "contrast" | undefined {
-      switch(category) {
-          case 'Familiar': return 'success';
-          case 'Académica': return 'info';
-          case 'Factores de Riesgo': return 'danger';
-          case 'Autoestima': return 'warn';
-          default: return 'secondary';
-      }
+  refresh() {
+    this.loadHierarchy();
   }
 }
