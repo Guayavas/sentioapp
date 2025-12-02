@@ -1,0 +1,50 @@
+<div class="home-container">
+    <!-- Welcome Header -->
+    <div class="welcome-header">
+        <h1>Bienvenido a SentioApp</h1>
+        <p>Sistema de Gestión de Bienestar Estudiantil</p>
+    </div>
+
+    <!-- Cards Grid -->
+    <div class="cards-grid">
+        <!-- Explorador Card -->
+        <div class="card-container">
+            <p-card styleClass="tool-card shadow-2">
+                <ng-template pTemplate="header">
+                    <div class="card-header">
+                        <div class="icon-container">
+                            <i class="pi pi-eye"></i>
+                        </div>
+                        <h2 class="card-title">Explorador de Datos</h2>
+                    </div>
+                </ng-template>
+                <div class="card-content">
+                    Visualiza y analiza las respuestas de los estudiantes clasificadas por categorías. Utiliza filtros avanzados para encontrar información específica por sede, género y más.
+                </div>
+                <ng-template pTemplate="footer">
+                    <button pButton label="Acceder" icon="pi pi-arrow-right" iconPos="right" routerLink="/app/explorer" styleClass="action-button"></button>
+                </ng-template>
+            </p-card>
+        </div>
+
+        <!-- Clasificador Card -->
+        <div class="card-container">
+            <p-card styleClass="tool-card shadow-2">
+                <ng-template pTemplate="header">
+                    <div class="card-header">
+                        <div class="icon-container">
+                            <i class="pi pi-cog"></i>
+                        </div>
+                        <h2 class="card-title">Clasificador de Información</h2>
+                    </div>
+                </ng-template>
+                <div class="card-content">
+                    Carga nuevos archivos de encuestas o documentos. El sistema procesará y pre-clasificará las respuestas automáticamente para tu revisión y aprobación manual.
+                </div>
+                <ng-template pTemplate="footer">
+                    <button pButton label="Acceder" icon="pi pi-arrow-right" iconPos="right" routerLink="/app/classifier" styleClass="action-button"></button>
+                </ng-template>
+            </p-card>
+        </div>
+    </div>
+</div>

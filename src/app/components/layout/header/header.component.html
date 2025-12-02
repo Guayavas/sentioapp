@@ -1,0 +1,19 @@
+<header class="app-header">
+    <div class="header-container">
+      <!-- Logo -->
+      <div class="logo-section">
+          <i class="pi pi-verified"></i>
+        <div class="brand-info">
+          <h1>SentioApp</h1>
+          <p>Bienestar Estudiantil</p>
+        </div>
+      </div>
+
+      <!-- Navegación -->
+      <nav class="nav-section">
+          <button pButton label="Inicio" icon="pi pi-home" routerLink="/app/home" class="p-button-text"></button>
+          <button pButton label="Perfil" icon="pi pi-user" routerLink="/app/profile" class="p-button-text"></button>
+          <button pButton label="Cerrar Sesión" icon="pi pi-sign-out" (click)="logout()" class="p-button-text"></button>
+      </nav>
+    </div>
+</header>

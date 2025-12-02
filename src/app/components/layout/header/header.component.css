@@ -1,0 +1,56 @@
+.app-header {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    z-index: 5;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.logo-section i {
+    font-size: 1.5rem; /* ~text-3xl equiv */
+    color: white;
+}
+
+.brand-info h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+    margin: 0;
+}
+
+.brand-info p {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+}
+
+.nav-section {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Botones de navegación del header */
+:host ::ng-deep .p-button.p-button-text {
+    color: white;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+:host ::ng-deep .p-button.p-button-text:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
