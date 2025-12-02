@@ -1,5 +1,5 @@
 <div class="layout-wrapper flex flex-column h-screen">
-    <app-header (onUploadClick)="openUpload()"></app-header>
+    <app-header></app-header>
     <div class="flex flex-grow-1 overflow-hidden">
         <app-sidebar class="flex-none"></app-sidebar>
         <main class="flex-grow-1 p-3 overflow-auto surface-ground">
@@ -10,14 +10,3 @@
 </div>
 
 <p-toast></p-toast>
-
-<p-dialog header="Importar Archivo Excel" [(visible)]="showUploadDialog" [modal]="true" [style]="{width: '50vw'}">
-    <p-fileUpload
-        name="file"
-        customUpload="true"
-        (uploadHandler)="onUpload($event)"
-        accept=".xlsx,.xlsm"
-        [auto]="true"
-        chooseLabel="Seleccionar Archivo">
-    </p-fileUpload>
-</p-dialog>

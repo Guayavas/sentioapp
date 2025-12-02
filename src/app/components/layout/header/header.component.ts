@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ButtonModule } from 'primeng/button';
@@ -13,8 +13,6 @@ import { AuthService } from '../../../services/auth.service';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent {
-  @Output() onUploadClick = new EventEmitter<void>();
-
   constructor(private router: Router, private authService: AuthService) {}
 
   logout() {

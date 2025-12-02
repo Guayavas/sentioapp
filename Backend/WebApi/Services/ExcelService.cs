@@ -7,7 +7,8 @@ namespace WebApi.Services;
 
 public interface IExcelService
 {
-    Task ProcessExcelFileAsync(Stream fileStream, string fileName);
+    Task<List<PreviewResponseDto>> PreviewExcelFileAsync(Stream fileStream);
+    Task SaveImportAsync(List<PreviewResponseDto> responses, string fileName);
 }
 
 public class ExcelService : IExcelService
@@ -19,15 +20,47 @@ public class ExcelService : IExcelService
         _configuration = configuration;
     }
 
-    public async Task ProcessExcelFileAsync(Stream fileStream, string fileName)
+    public async Task<List<PreviewResponseDto>> PreviewExcelFileAsync(Stream fileStream)
     {
-        // Set License Context for EPPlus
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
-
         using var package = new ExcelPackage(fileStream);
+        var previewList = new List<PreviewResponseDto>();
+
+        foreach (var worksheet in package.Workbook.Worksheets)
+        {
+            if (worksheet.Name.Equals("Gráfica", StringComparison.OrdinalIgnoreCase)) continue;
+
+            string categoryName = worksheet.Name;
+            string questionText = worksheet.Cells["F1"].Text;
+
+            if (string.IsNullOrWhiteSpace(questionText)) continue;
+
+            int rowCount = worksheet.Dimension?.Rows ?? 0;
+            for (int row = 3; row <= rowCount; row++)
+            {
+                var responseText = worksheet.Cells[row, 6].Text; // F
+                if (string.IsNullOrWhiteSpace(responseText)) continue;
+
+                previewList.Add(new PreviewResponseDto
+                {
+                    QuestionText = questionText,
+                    CategoryName = categoryName,
+                    ResponseText = responseText,
+                    Universidad = worksheet.Cells[row, 1].Text, // A
+                    Programa = worksheet.Cells[row, 2].Text,    // B
+                    SexoBiologico = worksheet.Cells[row, 3].Text, // C
+                    OrientacionSexual = worksheet.Cells[row, 4].Text, // D
+                    GrupoEtnico = worksheet.Cells[row, 5].Text    // E
+                });
+            }
+        }
+        return await Task.FromResult(previewList);
+    }
+
+    public async Task SaveImportAsync(List<PreviewResponseDto> responses, string fileName)
+    {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
         await connection.OpenAsync();
-
         using var transaction = connection.BeginTransaction();
 
         try
@@ -36,54 +69,33 @@ public class ExcelService : IExcelService
             var importSql = "INSERT INTO Imports (FileName, ImportDate) OUTPUT INSERTED.Id VALUES (@FileName, GETDATE())";
             int importId = await connection.ExecuteScalarAsync<int>(importSql, new { FileName = fileName }, transaction);
 
-            foreach (var worksheet in package.Workbook.Worksheets)
+            foreach (var dto in responses)
             {
-                if (worksheet.Name.Equals("Gráfica", StringComparison.OrdinalIgnoreCase)) continue;
+                // 2. Get/Create Category
+                var catId = await GetOrCreateCategoryAsync(connection, transaction, dto.CategoryName);
 
-                // 2. Handle Category (Sheet Name)
-                var categoryId = await GetOrCreateCategoryAsync(connection, transaction, worksheet.Name);
+                // 3. Get/Create Question
+                var qId = await GetOrCreateQuestionAsync(connection, transaction, dto.QuestionText);
 
-                // 3. Handle Question (Cell F1)
-                var questionText = worksheet.Cells["F1"].Text;
-                if (string.IsNullOrWhiteSpace(questionText)) continue; // Skip if no question
+                // 4. Insert Response
+                var insertSql = @"
+                    INSERT INTO Responses
+                    (QuestionId, CategoryId, ImportId, ResponseText, Universidad, Programa, SexoBiologico, OrientacionSexual, GrupoEtnico)
+                    VALUES
+                    (@QuestionId, @CategoryId, @ImportId, @ResponseText, @Universidad, @Programa, @SexoBiologico, @OrientacionSexual, @GrupoEtnico)";
 
-                var questionId = await GetOrCreateQuestionAsync(connection, transaction, questionText);
-
-                // 4. Process Rows (Starting from Row 3)
-                int rowCount = worksheet.Dimension?.Rows ?? 0;
-                var responses = new List<Response>();
-
-                for (int row = 3; row <= rowCount; row++)
+                await connection.ExecuteAsync(insertSql, new
                 {
-                    // Check if row has data (e.g. Response in col F is not empty)
-                    var responseText = worksheet.Cells[row, 6].Text; // Column F = 6
-                    if (string.IsNullOrWhiteSpace(responseText)) continue;
-
-                    var response = new Response
-                    {
-                        QuestionId = questionId,
-                        CategoryId = categoryId,
-                        ImportId = importId,
-                        ResponseText = responseText,
-                        Universidad = worksheet.Cells[row, 1].Text, // A
-                        Programa = worksheet.Cells[row, 2].Text,    // B
-                        SexoBiologico = worksheet.Cells[row, 3].Text, // C
-                        OrientacionSexual = worksheet.Cells[row, 4].Text, // D
-                        GrupoEtnico = worksheet.Cells[row, 5].Text    // E
-                    };
-                    responses.Add(response);
-                }
-
-                if (responses.Any())
-                {
-                    var insertSql = @"
-                        INSERT INTO Responses
-                        (QuestionId, CategoryId, ImportId, ResponseText, Universidad, Programa, SexoBiologico, OrientacionSexual, GrupoEtnico)
-                        VALUES
-                        (@QuestionId, @CategoryId, @ImportId, @ResponseText, @Universidad, @Programa, @SexoBiologico, @OrientacionSexual, @GrupoEtnico)";
-
-                    await connection.ExecuteAsync(insertSql, responses, transaction);
-                }
+                    QuestionId = qId,
+                    CategoryId = catId,
+                    ImportId = importId,
+                    ResponseText = dto.ResponseText,
+                    Universidad = dto.Universidad,
+                    Programa = dto.Programa,
+                    SexoBiologico = dto.SexoBiologico,
+                    OrientacionSexual = dto.OrientacionSexual,
+                    GrupoEtnico = dto.GrupoEtnico
+                }, transaction);
             }
 
             transaction.Commit();
@@ -99,22 +111,16 @@ public class ExcelService : IExcelService
     {
         var sql = "SELECT Id FROM Categories WHERE Name = @Name";
         var id = await connection.ExecuteScalarAsync<int?>(sql, new { Name = name }, transaction);
-
         if (id.HasValue) return id.Value;
-
         sql = "INSERT INTO Categories (Name) OUTPUT INSERTED.Id VALUES (@Name)";
         return await connection.ExecuteScalarAsync<int>(sql, new { Name = name }, transaction);
     }
 
     private async Task<int> GetOrCreateQuestionAsync(SqlConnection connection, SqlTransaction transaction, string text)
     {
-        // Simple check: In reality, questions might differ slightly. Here we assume exact match or create new.
-        // Given the requirement: "F1 always has the question".
         var sql = "SELECT Id FROM Questions WHERE Text = @Text";
         var id = await connection.ExecuteScalarAsync<int?>(sql, new { Text = text }, transaction);
-
         if (id.HasValue) return id.Value;
-
         sql = "INSERT INTO Questions (Text) OUTPUT INSERTED.Id VALUES (@Text)";
         return await connection.ExecuteScalarAsync<int>(sql, new { Text = text }, transaction);
     }

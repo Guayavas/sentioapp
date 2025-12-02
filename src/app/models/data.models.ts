@@ -4,22 +4,25 @@ export interface LoginResponse {
     role: string;
 }
 
-export interface HierarchyNode {
-    key: string;
-    label: string;
-    children?: HierarchyNode[];
-    data?: any;
+export interface Question {
+    id: number;
+    text: string;
 }
 
-export interface Response {
-    id: number;
-    questionId: number;
-    categoryId: number;
-    importId: number;
+export interface PreviewResponse {
+    questionText: string;
+    categoryName: string;
     responseText: string;
     universidad: string;
     programa: string;
     sexoBiologico: string;
     orientacionSexual: string;
     grupoEtnico: string;
+}
+
+export interface Response extends PreviewResponse {
+    id: number;
+    questionId: number;
+    categoryId: number;
+    importId: number;
 }

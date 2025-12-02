@@ -1,16 +1,18 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../services/data.service';
-import { HierarchyNode, Response } from '../../models/data.models';
+import { Question, Response } from '../../models/data.models';
 
-// Módulos de PrimeNG
-import { TreeModule } from 'primeng/tree';
+// PrimeNG Modules
+import { ListboxModule } from 'primeng/listbox';
+import { TabViewModule } from 'primeng/tabview';
 import { TableModule } from 'primeng/table';
 import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
-import { TreeNode } from 'primeng/api';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 
 @Component({
   selector: 'app-explorer',
@@ -18,11 +20,14 @@ import { TreeNode } from 'primeng/api';
   imports: [
     CommonModule,
     FormsModule,
-    TreeModule,
+    ListboxModule,
+    TabViewModule,
     TableModule,
     CardModule,
-    ButtonModule,
-    TagModule
+    InputTextModule,
+    TagModule,
+    IconFieldModule,
+    InputIconModule
   ],
   templateUrl: './explorer.component.html',
   styleUrl: './explorer.component.css'
@@ -30,52 +35,45 @@ import { TreeNode } from 'primeng/api';
 export class ExplorerComponent implements OnInit {
   dataService = inject(DataService);
 
-  // Data Signals
-  nodes = signal<TreeNode[]>([]);
+  // Data
+  questions = this.dataService.questions;
+  selectedQuestion: Question | null = null;
   responses = this.dataService.currentResponses;
-  selectedNode: TreeNode | null = null;
-  loading = false;
+
+  // Search Filter
+  filterText = '';
+
+  // Computed: Group responses by Category for Tabs
+  groupedResponses = computed(() => {
+    const current = this.responses();
+    if (!current.length) return [];
+
+    // Group by categoryName
+    const groups = current.reduce((acc, resp) => {
+      const cat = resp.categoryName || 'General';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(resp);
+      return acc;
+    }, {} as Record<string, Response[]>);
+
+    return Object.keys(groups).map(key => ({
+      category: key,
+      items: groups[key]
+    }));
+  });
+
+  filteredQuestions = computed(() => {
+    const text = this.filterText.toLowerCase();
+    return this.questions().filter(q => q.text.toLowerCase().includes(text));
+  });
 
   ngOnInit() {
-    this.loadHierarchy();
+    this.dataService.getQuestions().subscribe();
   }
 
-  loadHierarchy() {
-    this.loading = true;
-    this.dataService.getHierarchy().subscribe({
-      next: (data) => {
-        this.nodes.set(this.transformToTreeNodes(data));
-        this.loading = false;
-      },
-      error: () => this.loading = false
-    });
-  }
-
-  // Transform backend DTO to PrimeNG TreeNode
-  transformToTreeNodes(data: HierarchyNode[]): TreeNode[] {
-    return data.map(cat => ({
-      key: cat.key,
-      label: cat.label,
-      expandedIcon: 'pi pi-folder-open',
-      collapsedIcon: 'pi pi-folder',
-      children: cat.children?.map(q => ({
-        key: q.key,
-        label: q.label,
-        icon: 'pi pi-question-circle',
-        data: q.data, // This is the QuestionId
-        leaf: true
-      }))
-    }));
-  }
-
-  onNodeSelect(event: any) {
-    if (event.node.leaf) {
-      const questionId = event.node.data;
-      this.dataService.getResponses(questionId).subscribe();
+  onQuestionSelect(event: any) {
+    if (event.value) {
+      this.dataService.getResponses(event.value.id).subscribe();
     }
-  }
-
-  refresh() {
-    this.loadHierarchy();
   }
 }

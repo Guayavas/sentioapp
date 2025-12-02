@@ -5,7 +5,19 @@
     </div>
     <div class="flex align-items-center gap-2">
         <span class="mr-2">Bienvenido, Usuario</span>
-        <p-button label="Importar" icon="pi pi-upload" styleClass="p-button-secondary p-button-sm" (onClick)="onUploadClick.emit()"></p-button>
-        <p-button label="Cerrar Sesión" icon="pi pi-sign-out" styleClass="p-button-danger p-button-text text-white" (onClick)="logout()"></p-button>
+        <!-- Perfil Button Restored -->
+        <p-button
+            icon="pi pi-user"
+            styleClass="p-button-rounded p-button-text text-white"
+            routerLink="/app/profile"
+            pTooltip="Perfil de Usuario">
+        </p-button>
+
+        <p-button
+            label="Cerrar Sesión"
+            icon="pi pi-sign-out"
+            styleClass="p-button-danger p-button-text text-white"
+            (onClick)="logout()">
+        </p-button>
     </div>
 </header>

@@ -16,51 +16,31 @@ public class DataController : ControllerBase
         _configuration = configuration;
     }
 
-    [HttpGet("hierarchy")]
-    public async Task<IActionResult> GetHierarchy()
+    [HttpGet("questions")]
+    public async Task<IActionResult> GetQuestions()
     {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-
-        // This query fetches Categories and their associated questions based on existing Responses
-        // This ensures we only show Questions that actually have data for that Category
-        var sql = @"
-            SELECT DISTINCT c.Id as CategoryId, c.Name as CategoryName, q.Id as QuestionId, q.Text as QuestionText
-            FROM Responses r
-            JOIN Categories c ON r.CategoryId = c.Id
-            JOIN Questions q ON r.QuestionId = q.Id
-            ORDER BY c.Name, q.Text";
-
-        var data = await connection.QueryAsync(sql);
-
-        // Group by Category to form a tree
-        var hierarchy = data.GroupBy(d => new { d.CategoryId, d.CategoryName })
-                            .Select(g => new
-                            {
-                                key = g.Key.CategoryId.ToString(),
-                                label = g.Key.CategoryName,
-                                children = g.Select(x => new
-                                {
-                                    key = $"{g.Key.CategoryId}-{x.QuestionId}",
-                                    label = x.QuestionText,
-                                    data = x.QuestionId
-                                }).Distinct().ToList()
-                            });
-
-        return Ok(hierarchy);
+        var sql = "SELECT DISTINCT Id, Text FROM Questions ORDER BY Text";
+        var questions = await connection.QueryAsync<QuestionDto>(sql);
+        return Ok(questions);
     }
 
     [HttpGet("responses/{questionId}")]
-    public async Task<IActionResult> GetResponses(int questionId, [FromQuery] int? categoryId)
+    public async Task<IActionResult> GetResponses(int questionId)
     {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
-        var sql = "SELECT * FROM Responses WHERE QuestionId = @QuestionId";
 
-        if (categoryId.HasValue)
-        {
-            sql += " AND CategoryId = @CategoryId";
-        }
+        // Return CategoryName too, to allow grouping in Frontend
+        var sql = @"
+            SELECT r.*, c.Name as CategoryName
+            FROM Responses r
+            JOIN Categories c ON r.CategoryId = c.Id
+            WHERE r.QuestionId = @QuestionId";
 
-        var responses = await connection.QueryAsync<Response>(sql, new { QuestionId = questionId, CategoryId = categoryId });
+        var responses = await connection.QueryAsync<dynamic>(sql, new { QuestionId = questionId });
+
+        // Map dynamic result to Response object with CategoryName (Frontend needs to handle this extra prop if needed, or we map it)
+        // For simplicity, we return the list and let frontend group it.
         return Ok(responses);
     }
 }
