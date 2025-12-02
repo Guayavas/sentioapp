@@ -36,8 +36,9 @@
             styleClass="w-full"
             inputStyleClass="w-full">
           </p-password>
-          <small *ngIf="loginError" class="p-error block mt-2 font-bold" style="color: var(--red-500);">
-            Usuario o contraseña incorrectos
+          <!-- Fixed: Using !important red color and PrimeFlex text-red-500 -->
+          <small *ngIf="loginError" class="block mt-2 font-bold text-red-500" style="color: #ef4444 !important;">
+            <i class="pi pi-exclamation-circle mr-1"></i>Usuario o contraseña incorrectos
           </small>
         </div>
         <div class="mt-2">

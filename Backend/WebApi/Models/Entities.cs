@@ -23,19 +23,7 @@ public class LoginResponseDto
     public string Role { get; set; } = string.Empty;
 }
 
-public class Category
-{
-    public int Id { get; set; }
-    public string Name { get; set; } = string.Empty;
-}
-
-public class Question
-{
-    public int Id { get; set; }
-    public string Text { get; set; } = string.Empty;
-}
-
-public class Response
+public class ResponseDto
 {
     public int Id { get; set; }
     public int QuestionId { get; set; }
@@ -47,4 +35,5 @@ public class Response
     public string SexoBiologico { get; set; } = string.Empty;
     public string OrientacionSexual { get; set; } = string.Empty;
     public string GrupoEtnico { get; set; } = string.Empty;
+    public string CategoryName { get; set; } = string.Empty;
 }

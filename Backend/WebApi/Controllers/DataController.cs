@@ -30,17 +30,15 @@ public class DataController : ControllerBase
     {
         using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
 
-        // Return CategoryName too, to allow grouping in Frontend
         var sql = @"
             SELECT r.*, c.Name as CategoryName
             FROM Responses r
             JOIN Categories c ON r.CategoryId = c.Id
             WHERE r.QuestionId = @QuestionId";
 
-        var responses = await connection.QueryAsync<dynamic>(sql, new { QuestionId = questionId });
+        // Now using explicit ResponseDto instead of dynamic
+        var responses = await connection.QueryAsync<ResponseDto>(sql, new { QuestionId = questionId });
 
-        // Map dynamic result to Response object with CategoryName (Frontend needs to handle this extra prop if needed, or we map it)
-        // For simplicity, we return the list and let frontend group it.
         return Ok(responses);
     }
 }
