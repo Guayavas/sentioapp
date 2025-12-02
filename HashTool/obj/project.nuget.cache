@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "NJMz43sV0ish9EpopScWt5YgEFGm5b2XzfypcJfBvC8r0lKHzqVgBEcG4kXQyh7KvE2SBC8H3l1DPqkZIDw5Yg==",
+  "success": true,
+  "projectFilePath": "/app/HashTool/HashTool.csproj",
+  "expectedPackageFiles": [
+    "/home/jules/.nuget/packages/bcrypt.net-next/4.0.3/bcrypt.net-next.4.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

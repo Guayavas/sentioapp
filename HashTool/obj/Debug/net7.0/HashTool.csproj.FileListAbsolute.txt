@@ -1,0 +1,17 @@
+/app/HashTool/bin/Debug/net7.0/HashTool
+/app/HashTool/bin/Debug/net7.0/HashTool.deps.json
+/app/HashTool/bin/Debug/net7.0/HashTool.runtimeconfig.json
+/app/HashTool/bin/Debug/net7.0/HashTool.dll
+/app/HashTool/bin/Debug/net7.0/HashTool.pdb
+/app/HashTool/bin/Debug/net7.0/BCrypt.Net-Next.dll
+/app/HashTool/obj/Debug/net7.0/HashTool.csproj.AssemblyReference.cache
+/app/HashTool/obj/Debug/net7.0/HashTool.GeneratedMSBuildEditorConfig.editorconfig
+/app/HashTool/obj/Debug/net7.0/HashTool.AssemblyInfoInputs.cache
+/app/HashTool/obj/Debug/net7.0/HashTool.AssemblyInfo.cs
+/app/HashTool/obj/Debug/net7.0/HashTool.csproj.CoreCompileInputs.cache
+/app/HashTool/obj/Debug/net7.0/HashTool.csproj.CopyComplete
+/app/HashTool/obj/Debug/net7.0/HashTool.dll
+/app/HashTool/obj/Debug/net7.0/refint/HashTool.dll
+/app/HashTool/obj/Debug/net7.0/HashTool.pdb
+/app/HashTool/obj/Debug/net7.0/HashTool.genruntimeconfig.cache
+/app/HashTool/obj/Debug/net7.0/ref/HashTool.dll

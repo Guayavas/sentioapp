@@ -1,0 +1,12 @@
+<div class="layout-wrapper flex flex-column h-screen">
+    <app-header></app-header>
+    <div class="flex flex-grow-1 overflow-hidden">
+        <app-sidebar class="flex-none"></app-sidebar>
+        <main class="flex-grow-1 p-3 overflow-auto surface-ground">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+    <app-footer class="flex-none"></app-footer>
+</div>
+
+<p-toast></p-toast>
