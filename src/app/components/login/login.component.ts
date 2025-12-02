@@ -9,11 +9,12 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { ToastModule } from 'primeng/toast';
+import { MessageModule } from 'primeng/message';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, CardModule, InputTextModule, PasswordModule, ButtonModule, ToastModule],
+  imports: [CommonModule, FormsModule, CardModule, InputTextModule, PasswordModule, ButtonModule, ToastModule, MessageModule],
   providers: [MessageService],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -22,6 +23,7 @@ export class LoginComponent {
   username = '';
   password = '';
   loading = false;
+  loginError = false;
 
   constructor(
     private authService: AuthService,
@@ -30,6 +32,7 @@ export class LoginComponent {
   ) {}
 
   login() {
+    this.loginError = false;
     if (this.username && this.password) {
       this.loading = true;
       this.authService.login(this.username, this.password).subscribe({
@@ -38,6 +41,7 @@ export class LoginComponent {
         },
         error: (err) => {
           this.loading = false;
+          this.loginError = true;
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Credenciales inválidas o error de servidor' });
         }
       });
