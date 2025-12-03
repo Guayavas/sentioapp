@@ -25,10 +25,10 @@
                     styleClass="w-full border-none">
                     <ng-template let-q pTemplate="item">
                         <div class="flex align-items-center justify-content-between w-full">
-                            <div class="white-space-normal text-sm" style="max-width: 90%;">{{q.text}}</div>
+                            <div class="white-space-normal text-sm flex-grow-1 mr-2">{{q.text}}</div>
                             <p-button
                                 icon="pi pi-trash"
-                                styleClass="p-button-rounded p-button-danger p-button-text p-button-sm"
+                                styleClass="p-button-rounded p-button-danger p-button-sm flex-shrink-0"
                                 (onClick)="deleteQuestion($event, q.id)"
                                 pTooltip="Eliminar pregunta">
                             </p-button>
