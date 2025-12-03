@@ -49,4 +49,15 @@ export class DataService {
       })
     );
   }
+
+  // 6. Delete Question
+  deleteQuestion(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/data/questions/${id}`).pipe(
+      tap(() => {
+        this.questions.update(list => list.filter(q => q.id !== id));
+        // Also clear current responses if the deleted question was selected
+        this.currentResponses.set([]);
+      })
+    );
+  }
 }

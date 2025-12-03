@@ -53,4 +53,35 @@ public class DataController : ControllerBase
 
         return Ok(new { message = "Respuesta eliminada correctamente." });
     }
+
+    [HttpDelete("questions/{id}")]
+    public async Task<IActionResult> DeleteQuestion(int id)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        connection.Open();
+        using var transaction = connection.BeginTransaction();
+
+        try
+        {
+            // 1. Delete associated responses first
+            await connection.ExecuteAsync("DELETE FROM Responses WHERE QuestionId = @Id", new { Id = id }, transaction);
+
+            // 2. Delete the question
+            var rowsAffected = await connection.ExecuteAsync("DELETE FROM Questions WHERE Id = @Id", new { Id = id }, transaction);
+
+            if (rowsAffected == 0)
+            {
+                transaction.Rollback();
+                return NotFound("Pregunta no encontrada.");
+            }
+
+            transaction.Commit();
+            return Ok(new { message = "Pregunta y sus respuestas eliminadas correctamente." });
+        }
+        catch (Exception ex)
+        {
+            transaction.Rollback();
+            return StatusCode(500, $"Error al eliminar: {ex.Message}");
+        }
+    }
 }

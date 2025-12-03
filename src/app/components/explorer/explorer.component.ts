@@ -108,4 +108,28 @@ export class ExplorerComponent implements OnInit {
       }
     });
   }
+
+  deleteQuestion(event: Event, id: number) {
+    event.stopPropagation(); // Prevent listbox selection
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de que deseas eliminar esta pregunta? Se eliminarán todas las respuestas asociadas.',
+      header: 'Eliminar Pregunta',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, Eliminar',
+      rejectLabel: 'Cancelar',
+      acceptButtonStyleClass: 'p-button-danger',
+      rejectButtonStyleClass: 'p-button-text p-button-secondary',
+      accept: () => {
+        this.dataService.deleteQuestion(id).subscribe({
+          next: () => {
+            this.selectedQuestion = null; // Clear selection
+            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Pregunta eliminada correctamente' });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la pregunta' });
+          }
+        });
+      }
+    });
+  }
 }
