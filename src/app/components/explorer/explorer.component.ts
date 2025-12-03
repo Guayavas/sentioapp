@@ -41,7 +41,7 @@ export class ExplorerComponent implements OnInit {
   responses = this.dataService.currentResponses;
 
   // Search Filter
-  filterText = '';
+  filterText = signal('');
 
   // Computed: Group responses by Category for Tabs
   groupedResponses = computed(() => {
@@ -63,7 +63,7 @@ export class ExplorerComponent implements OnInit {
   });
 
   filteredQuestions = computed(() => {
-    const text = this.filterText.toLowerCase();
+    const text = this.filterText().toLowerCase();
     return this.questions().filter(q => q.text.toLowerCase().includes(text));
   });
 
