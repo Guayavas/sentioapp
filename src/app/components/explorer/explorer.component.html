@@ -1,3 +1,6 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
 <div class="flex h-full gap-3 p-3">
     <!-- Sidebar: Questions List -->
     <div class="w-4 flex flex-column gap-2">
@@ -7,7 +10,7 @@
                     <span class="font-bold text-lg mb-2 block">Preguntas Disponibles</span>
                     <p-iconField iconPosition="left" class="w-full">
                         <p-inputIcon styleClass="pi pi-search" />
-                        <input type="text" pInputText [(ngModel)]="filterText" placeholder="Buscar pregunta..." class="w-full" />
+                        <input type="text" pInputText [ngModel]="filterText()" (ngModelChange)="filterText.set($event)" placeholder="Buscar pregunta..." class="w-full" />
                     </p-iconField>
                 </div>
             </ng-template>
@@ -21,7 +24,16 @@
                     (onChange)="onQuestionSelect($event)"
                     styleClass="w-full border-none">
                     <ng-template let-q pTemplate="item">
-                        <div class="white-space-normal text-sm">{{q.text}}</div>
+                        <div class="flex align-items-center justify-content-between w-full">
+                            <div class="white-space-normal text-sm flex-grow-1 mr-2">{{q.text}}</div>
+                            <p-button
+                                label="Eliminar"
+                                icon="pi pi-trash"
+                                styleClass="p-button-danger p-button-sm flex-shrink-0"
+                                (onClick)="deleteQuestion($event, q.id)"
+                                pTooltip="Eliminar pregunta">
+                            </p-button>
+                        </div>
                     </ng-template>
                 </p-listbox>
             </div>
@@ -50,18 +62,31 @@
                             scrollHeight="500px">
                             <ng-template pTemplate="header">
                                 <tr>
-                                    <th style="width: 50%">Respuesta</th>
+                                    <th>Universidad</th>
                                     <th>Programa</th>
-                                    <th>Género</th>
-                                    <th>Sede</th>
+                                    <th>Sexo Biológico</th>
+                                    <th>Orientación Sexual</th>
+                                    <th>Grupo Étnico</th>
+                                    <th style="width: 40%">Respuesta</th>
+                                    <th style="width: 50px"></th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-response>
                                 <tr>
-                                    <td>{{ response.responseText }}</td>
-                                    <td><p-tag [value]="response.programa" severity="info"></p-tag></td>
-                                    <td>{{ response.sexoBiologico }}</td>
                                     <td>{{ response.universidad }}</td>
+                                    <td>{{ response.programa }}</td>
+                                    <td>{{ response.sexoBiologico }}</td>
+                                    <td>{{ response.orientacionSexual }}</td>
+                                    <td>{{ response.grupoEtnico }}</td>
+                                    <td>{{ response.responseText }}</td>
+                                    <td>
+                                        <p-button
+                                            icon="pi pi-trash"
+                                            styleClass="p-button-danger p-button-text p-button-sm"
+                                            (onClick)="deleteResponse(response.id)"
+                                            pTooltip="Eliminar respuesta">
+                                        </p-button>
+                                    </td>
                                 </tr>
                             </ng-template>
                         </p-table>

@@ -22,6 +22,20 @@ export class AuthService {
     );
   }
 
+  getProfile(): Observable<any> {
+    const token = this.getToken();
+    return this.http.get(`${this.apiUrl}/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
+  updateProfile(data: any): Observable<any> {
+    const token = this.getToken();
+    return this.http.put(`${this.apiUrl}/profile`, data, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+  }
+
   logout() {
     localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userKey);
