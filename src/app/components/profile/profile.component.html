@@ -6,16 +6,17 @@
         <div class="profile-header-content">
             <div class="avatar-wrapper">
                 <p-avatar
-                    [label]="getInitials(user.name)"
+                    [label]="getInitials(user.fullName)"
                     size="xlarge"
                     shape="circle"
                     styleClass="w-6rem h-6rem text-3xl bg-green-100 text-green-800">
                 </p-avatar>
-                <button *ngIf="isEditing" pButton icon="pi pi-camera" class="p-button-rounded p-button-secondary p-button-sm edit-avatar-btn"></button>
+                <!-- Avatar editing is not supported in backend yet -->
+                <!-- <button *ngIf="isEditing" pButton icon="pi pi-camera" class="p-button-rounded p-button-secondary p-button-sm edit-avatar-btn"></button> -->
             </div>
             <div>
-                <h2 class="user-name">{{user.name}}</h2>
-                <p class="user-program">{{user.program}}</p>
+                <h2 class="user-name">{{user.fullName}}</h2>
+                <p class="user-program">{{user.role}}</p>
             </div>
         </div>
     </p-card>
@@ -38,19 +39,19 @@
         <div class="form-grid">
             <div class="form-col">
                 <label class="form-label">Nombre Completo</label>
-                <input pInputText [(ngModel)]="user.name" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
+                <input pInputText [(ngModel)]="user.fullName" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
             </div>
             <div class="form-col">
-                <label class="form-label">Correo Electrónico</label>
-                <input pInputText [(ngModel)]="user.email" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
+                <label class="form-label">Usuario (Correo)</label>
+                <input pInputText [(ngModel)]="user.username" [disabled]="true" class="w-full input-readonly" pTooltip="El nombre de usuario no se puede cambiar">
             </div>
             <div class="form-col">
-                <label class="form-label">Teléfono</label>
-                <input pInputText [(ngModel)]="user.phone" [disabled]="!isEditing" placeholder="Ingresa tu teléfono" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
+                <label class="form-label">Rol</label>
+                <input pInputText [(ngModel)]="user.role" [disabled]="true" class="w-full input-readonly">
             </div>
             <div class="form-col">
-                <label class="form-label">ID</label>
-                <input pInputText [(ngModel)]="user.studentId" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
+                <label class="form-label">Cédula / ID</label>
+                <input pInputText [(ngModel)]="user.identifier" [disabled]="!isEditing" class="w-full" [ngClass]="{'input-readonly': !isEditing}">
             </div>
         </div>
     </p-card>
