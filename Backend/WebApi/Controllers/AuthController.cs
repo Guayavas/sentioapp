@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using WebApi.Models;
 using WebApi.Services;
 
@@ -24,5 +25,31 @@ public class AuthController : ControllerBase
             return BadRequest("Usuario o contraseña incorrectos.");
         }
         return Ok(result);
+    }
+
+    [HttpGet("profile")]
+    [Authorize]
+    public async Task<ActionResult<UserProfileDto>> GetProfile()
+    {
+        var username = User.Identity?.Name;
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
+
+        var profile = await _authService.GetProfileAsync(username);
+        if (profile == null) return NotFound();
+
+        return Ok(profile);
+    }
+
+    [HttpPut("profile")]
+    [Authorize]
+    public async Task<IActionResult> UpdateProfile(UpdateProfileDto request)
+    {
+        var username = User.Identity?.Name;
+        if (string.IsNullOrEmpty(username)) return Unauthorized();
+
+        var success = await _authService.UpdateProfileAsync(username, request);
+        if (!success) return BadRequest("No se pudo actualizar el perfil. Verifique su contraseña actual.");
+
+        return Ok(new { message = "Perfil actualizado exitosamente." });
     }
 }
