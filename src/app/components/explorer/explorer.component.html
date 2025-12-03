@@ -27,8 +27,9 @@
                         <div class="flex align-items-center justify-content-between w-full">
                             <div class="white-space-normal text-sm flex-grow-1 mr-2">{{q.text}}</div>
                             <p-button
+                                label="Eliminar"
                                 icon="pi pi-trash"
-                                styleClass="p-button-text p-button-danger flex-shrink-0"
+                                styleClass="p-button-danger p-button-sm flex-shrink-0"
                                 (onClick)="deleteQuestion($event, q.id)"
                                 pTooltip="Eliminar pregunta">
                             </p-button>
