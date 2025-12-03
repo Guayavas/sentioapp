@@ -16,6 +16,9 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    /// <summary>
+    /// Inicia sesión validando usuario y contraseña, retornando un token JWT.
+    /// </summary>
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponseDto>> Login(LoginDto request)
     {
@@ -27,6 +30,9 @@ public class AuthController : ControllerBase
         return Ok(result);
     }
 
+    /// <summary>
+    /// Obtiene la información del perfil del usuario autenticado actual.
+    /// </summary>
     [HttpGet("profile")]
     [Authorize]
     public async Task<ActionResult<UserProfileDto>> GetProfile()
@@ -40,6 +46,9 @@ public class AuthController : ControllerBase
         return Ok(profile);
     }
 
+    /// <summary>
+    /// Actualiza los datos del perfil y opcionalmente la contraseña del usuario.
+    /// </summary>
     [HttpPut("profile")]
     [Authorize]
     public async Task<IActionResult> UpdateProfile(UpdateProfileDto request)

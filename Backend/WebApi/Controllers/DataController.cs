@@ -16,6 +16,9 @@ public class DataController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    /// Obtiene la lista de todas las preguntas registradas, ordenadas alfabéticamente.
+    /// </summary>
     [HttpGet("questions")]
     public async Task<IActionResult> GetQuestions()
     {
@@ -25,6 +28,9 @@ public class DataController : ControllerBase
         return Ok(questions);
     }
 
+    /// <summary>
+    /// Obtiene todas las respuestas asociadas a una pregunta específica, incluyendo categoría y demografía.
+    /// </summary>
     [HttpGet("responses/{questionId}")]
     public async Task<IActionResult> GetResponses(int questionId)
     {
@@ -42,6 +48,9 @@ public class DataController : ControllerBase
         return Ok(responses);
     }
 
+    /// <summary>
+    /// Elimina una respuesta individual por su ID.
+    /// </summary>
     [HttpDelete("responses/{id}")]
     public async Task<IActionResult> DeleteResponse(int id)
     {
@@ -54,6 +63,9 @@ public class DataController : ControllerBase
         return Ok(new { message = "Respuesta eliminada correctamente." });
     }
 
+    /// <summary>
+    /// Elimina una pregunta por su ID, borrando primero todas sus respuestas asociadas (en transacción).
+    /// </summary>
     [HttpDelete("questions/{id}")]
     public async Task<IActionResult> DeleteQuestion(int id)
     {

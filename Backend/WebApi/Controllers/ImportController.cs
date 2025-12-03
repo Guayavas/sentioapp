@@ -16,6 +16,11 @@ public class ImportController : ControllerBase
         _excelService = excelService;
     }
 
+    /// <summary>
+    /// Recibe un archivo Excel, lo procesa y devuelve una vista previa de los datos extraídos en formato JSON.
+    /// </summary>
+    /// <param name="file">El archivo Excel (.xlsx o .xlsm).</param>
+    /// <returns>Lista de objetos de respuesta previsualizados.</returns>
     [HttpPost("preview")]
     public async Task<ActionResult<List<PreviewResponseDto>>> Preview(IFormFile file)
     {
@@ -34,6 +39,10 @@ public class ImportController : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Guarda los datos importados confirmados en la base de datos.
+    /// </summary>
+    /// <param name="request">DTO con la lista de respuestas y el nombre del archivo original.</param>
     [HttpPost("confirm")]
     public async Task<IActionResult> Confirm([FromBody] ConfirmImportDto request)
     {

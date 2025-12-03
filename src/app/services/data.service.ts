@@ -15,33 +15,51 @@ export class DataService {
 
   constructor(private http: HttpClient) { }
 
-  // 1. Obtener Lista de Preguntas para la Barra Lateral
+  /**
+   * Obtiene la lista completa de preguntas desde el servidor y actualiza la señal 'questions'.
+   * @returns Observable con el array de preguntas.
+   */
   getQuestions(): Observable<Question[]> {
     return this.http.get<Question[]>(`${this.apiUrl}/data/questions`).pipe(
       tap(data => this.questions.set(data))
     );
   }
 
-  // 2. Obtener Respuestas para el Área Principal
+  /**
+   * Carga las respuestas asociadas a una pregunta específica y actualiza la señal 'currentResponses'.
+   * @param questionId ID de la pregunta.
+   * @returns Observable con el array de respuestas detalladas.
+   */
   getResponses(questionId: number): Observable<Response[]> {
     return this.http.get<Response[]>(`${this.apiUrl}/data/responses/${questionId}`).pipe(
       tap(data => this.currentResponses.set(data))
     );
   }
 
-  // 3. Previsualizar Archivo Excel
+  /**
+   * Envía un archivo Excel al servidor para ser procesado y previsualizado sin guardar.
+   * @param file Archivo Excel seleccionado por el usuario.
+   * @returns Observable con la lista de respuestas previsualizadas.
+   */
   previewFile(file: File): Observable<PreviewResponse[]> {
     const formData = new FormData();
     formData.append('file', file);
     return this.http.post<PreviewResponse[]>(`${this.apiUrl}/import/preview`, formData);
   }
 
-  // 4. Confirmar Importación
+  /**
+   * Confirma y guarda permanentemente los datos importados en la base de datos.
+   * @param responses Lista de respuestas validadas.
+   * @param fileName Nombre del archivo original para registro.
+   */
   confirmImport(responses: PreviewResponse[], fileName: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/import/confirm`, { responses, originalFileName: fileName });
   }
 
-  // 5. Eliminar Respuesta
+  /**
+   * Elimina una respuesta individual y actualiza la lista local.
+   * @param id ID de la respuesta a eliminar.
+   */
   deleteResponse(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/data/responses/${id}`).pipe(
       tap(() => {
@@ -50,7 +68,10 @@ export class DataService {
     );
   }
 
-  // 6. Eliminar Pregunta
+  /**
+   * Elimina una pregunta completa y todas sus respuestas asociadas.
+   * @param id ID de la pregunta a eliminar.
+   */
   deleteQuestion(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/data/questions/${id}`).pipe(
       tap(() => {
