@@ -13,6 +13,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TagModule } from 'primeng/tag';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { ButtonModule } from 'primeng/button';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-explorer',
@@ -27,13 +31,19 @@ import { InputIconModule } from 'primeng/inputicon';
     InputTextModule,
     TagModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    ButtonModule,
+    ConfirmDialogModule,
+    ToastModule
   ],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './explorer.component.html',
   styleUrl: './explorer.component.css'
 })
 export class ExplorerComponent implements OnInit {
   dataService = inject(DataService);
+  confirmationService = inject(ConfirmationService);
+  messageService = inject(MessageService);
 
   // Data
   questions = this.dataService.questions;
@@ -54,7 +64,7 @@ export class ExplorerComponent implements OnInit {
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(resp);
       return acc;
-    }, {} as Record<string, Response[]>);
+      }, {} as Record<string, Response[]>);
 
     return Object.keys(groups).map(key => ({
       category: key,
@@ -75,5 +85,27 @@ export class ExplorerComponent implements OnInit {
     if (event.value) {
       this.dataService.getResponses(event.value.id).subscribe();
     }
+  }
+
+  deleteResponse(id: number) {
+    this.confirmationService.confirm({
+      message: '¿Estás seguro de que deseas eliminar esta respuesta?',
+      header: 'Confirmar Eliminación',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí',
+      rejectLabel: 'No',
+      acceptButtonStyleClass: 'p-button-danger p-button-text',
+      rejectButtonStyleClass: 'p-button-text p-button-secondary',
+      accept: () => {
+        this.dataService.deleteResponse(id).subscribe({
+          next: () => {
+            this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Respuesta eliminada correctamente' });
+          },
+          error: () => {
+            this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo eliminar la respuesta' });
+          }
+        });
+      }
+    });
   }
 }

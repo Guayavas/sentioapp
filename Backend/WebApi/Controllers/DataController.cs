@@ -41,4 +41,16 @@ public class DataController : ControllerBase
 
         return Ok(responses);
     }
+
+    [HttpDelete("responses/{id}")]
+    public async Task<IActionResult> DeleteResponse(int id)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        var sql = "DELETE FROM Responses WHERE Id = @Id";
+        var rowsAffected = await connection.ExecuteAsync(sql, new { Id = id });
+
+        if (rowsAffected == 0) return NotFound("Respuesta no encontrada.");
+
+        return Ok(new { message = "Respuesta eliminada correctamente." });
+    }
 }

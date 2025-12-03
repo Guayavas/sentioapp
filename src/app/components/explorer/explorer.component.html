@@ -1,3 +1,6 @@
+<p-toast></p-toast>
+<p-confirmDialog></p-confirmDialog>
+
 <div class="flex h-full gap-3 p-3">
     <!-- Sidebar: Questions List -->
     <div class="w-4 flex flex-column gap-2">
@@ -56,6 +59,7 @@
                                     <th>Orientación Sexual</th>
                                     <th>Grupo Étnico</th>
                                     <th style="width: 40%">Respuesta</th>
+                                    <th style="width: 50px"></th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-response>
@@ -66,6 +70,14 @@
                                     <td>{{ response.orientacionSexual }}</td>
                                     <td>{{ response.grupoEtnico }}</td>
                                     <td>{{ response.responseText }}</td>
+                                    <td>
+                                        <p-button
+                                            icon="pi pi-trash"
+                                            styleClass="p-button-danger p-button-text p-button-sm"
+                                            (onClick)="deleteResponse(response.id)"
+                                            pTooltip="Eliminar respuesta">
+                                        </p-button>
+                                    </td>
                                 </tr>
                             </ng-template>
                         </p-table>

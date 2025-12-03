@@ -40,4 +40,13 @@ export class DataService {
   confirmImport(responses: PreviewResponse[], fileName: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/import/confirm`, { responses, originalFileName: fileName });
   }
+
+  // 5. Delete Response
+  deleteResponse(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/data/responses/${id}`).pipe(
+      tap(() => {
+        this.currentResponses.update(list => list.filter(r => r.id !== id));
+      })
+    );
+  }
 }
