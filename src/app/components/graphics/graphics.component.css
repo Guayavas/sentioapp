@@ -1,0 +1,11 @@
+:host {
+    display: block;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.chart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

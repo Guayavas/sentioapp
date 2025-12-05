@@ -5,6 +5,7 @@ import { HomeComponent } from './components/home/home.component';
 import { ExplorerComponent } from './components/explorer/explorer.component';
 import { ClassifierComponent } from './components/classifier/classifier.component';
 import { ProfileComponent } from './components/profile/profile.component';
+import { GraphicsComponent } from './components/graphics/graphics.component';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -15,6 +16,7 @@ export const routes: Routes = [
         children: [
             { path: 'home', component: HomeComponent },
             { path: 'explorer', component: ExplorerComponent },
+            { path: 'graphics', component: GraphicsComponent },
             { path: 'classifier', component: ClassifierComponent },
             { path: 'profile', component: ProfileComponent },
             { path: '', redirectTo: 'home', pathMatch: 'full' }

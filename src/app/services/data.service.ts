@@ -81,4 +81,21 @@ export class DataService {
       })
     );
   }
+
+  /**
+   * Obtiene las opciones de filtro para la gráfica.
+   * @returns Observable con las listas de opciones.
+   */
+  getFilterOptions(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/data/filters`);
+  }
+
+  /**
+   * Genera los datos de la gráfica aplicando filtros.
+   * @param filter Objeto con los filtros seleccionados.
+   * @returns Observable con los datos procesados para el gráfico.
+   */
+  getChartData(filter: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/data/chart`, filter);
+  }
 }

@@ -1,0 +1,121 @@
+<p-toast></p-toast>
+
+<div class="p-3 h-full flex flex-column gap-3">
+    <!-- Panel de Filtros -->
+    <p-card header="Filtros de la Gráfica" styleClass="shadow-2">
+        <div class="grid p-fluid">
+            <!-- Fila 1 -->
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Sede</label>
+                <p-dropdown [options]="options.sedes" [(ngModel)]="filters.sede" [showClear]="false" placeholder="Todas">
+                    <ng-template pTemplate="selectedItem">
+                        {{filters.sede || 'Todas'}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Género Biológico</label>
+                <p-dropdown [options]="options.sexos" [(ngModel)]="filters.sexoBiologico" [showClear]="false" placeholder="Todas">
+                    <ng-template pTemplate="selectedItem">
+                        {{filters.sexoBiologico || 'Todas'}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Tipo de Gráfica</label>
+                <p-dropdown [options]="chartTypes" [(ngModel)]="filters.chartType" optionLabel="label" optionValue="value"></p-dropdown>
+            </div>
+
+            <!-- Fila 2 -->
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Orientación Sexual</label>
+                <p-dropdown [options]="options.orientaciones" [(ngModel)]="filters.orientacionSexual" [showClear]="false" placeholder="Todas">
+                    <ng-template pTemplate="selectedItem">
+                        {{filters.orientacionSexual || 'Todas'}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Grupo Étnico</label>
+                <p-dropdown [options]="options.etnias" [(ngModel)]="filters.grupoEtnico" [showClear]="false" placeholder="Todas">
+                    <ng-template pTemplate="selectedItem">
+                        {{filters.grupoEtnico || 'Todas'}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Categoría</label>
+                <p-dropdown [options]="options.categorias" [(ngModel)]="filters.categoria" [showClear]="false" placeholder="Todas">
+                    <ng-template pTemplate="selectedItem">
+                        {{filters.categoria || 'Todas'}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+
+            <!-- Fila 3 -->
+            <div class="col-12">
+                <label class="font-bold block mb-2">Programa</label>
+                <p-dropdown [options]="options.programas" [(ngModel)]="filters.programa" [filter]="true" filterBy="label" [showClear]="false" placeholder="Todas">
+                    <ng-template pTemplate="selectedItem">
+                        {{filters.programa || 'Todas'}}
+                    </ng-template>
+                    <ng-template pTemplate="item" let-item>
+                        {{item}}
+                    </ng-template>
+                </p-dropdown>
+            </div>
+
+            <!-- Fila 4: Pregunta y Agrupación -->
+            <div class="col-12 md:col-8">
+                <label class="font-bold block mb-2">Filtrar por Pregunta (Opcional)</label>
+                <p-autoComplete
+                    [(ngModel)]="filters.question"
+                    [suggestions]="filteredQuestions"
+                    (completeMethod)="filterQuestion($event)"
+                    field="text"
+                    placeholder="Escribe para buscar una pregunta..."
+                    [dropdown]="true"
+                    [forceSelection]="true">
+                </p-autoComplete>
+            </div>
+            <div class="col-12 md:col-4">
+                <label class="font-bold block mb-2">Agrupar Por</label>
+                <p-dropdown [options]="groupOptions" [(ngModel)]="filters.groupBy" optionLabel="label" optionValue="value"></p-dropdown>
+            </div>
+
+            <!-- Botones -->
+            <div class="col-12 flex justify-content-end gap-2 mt-2">
+                <p-button label="Generar Gráfica" icon="pi pi-chart-bar" (onClick)="generateChart()"></p-button>
+            </div>
+        </div>
+    </p-card>
+
+    <!-- Área de Gráfica -->
+    <div class="flex-grow-1 flex align-items-center justify-content-center" *ngIf="chartData">
+        <p-card styleClass="w-full h-full shadow-2 flex align-items-center justify-content-center">
+            <div class="chart-container" style="position: relative; height: 50vh; width: 70vw">
+                <p-chart [type]="getChartJsType()" [data]="chartData" [options]="chartOptions" width="100%" height="100%"></p-chart>
+            </div>
+        </p-card>
+    </div>
+
+    <div *ngIf="!chartData" class="flex-grow-1 flex flex-column align-items-center justify-content-center text-500">
+        <i class="pi pi-chart-line text-6xl mb-3"></i>
+        <span class="text-xl">Selecciona filtros y haz clic en "Generar Gráfica" para visualizar los datos.</span>
+    </div>
+</div>

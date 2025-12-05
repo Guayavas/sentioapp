@@ -96,4 +96,101 @@ public class DataController : ControllerBase
             return StatusCode(500, $"Error al eliminar: {ex.Message}");
         }
     }
+
+    /// <summary>
+    /// Obtiene las opciones únicas para poblar los filtros de la gráfica.
+    /// </summary>
+    [HttpGet("filters")]
+    public async Task<ActionResult<FilterOptionsDto>> GetFilterOptions()
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        var options = new FilterOptionsDto();
+
+        options.Sedes = (await connection.QueryAsync<string>("SELECT DISTINCT Universidad FROM Responses WHERE Universidad IS NOT NULL ORDER BY Universidad")).ToList();
+        options.Programas = (await connection.QueryAsync<string>("SELECT DISTINCT Programa FROM Responses WHERE Programa IS NOT NULL ORDER BY Programa")).ToList();
+        options.Sexos = (await connection.QueryAsync<string>("SELECT DISTINCT SexoBiologico FROM Responses WHERE SexoBiologico IS NOT NULL ORDER BY SexoBiologico")).ToList();
+        options.Orientaciones = (await connection.QueryAsync<string>("SELECT DISTINCT OrientacionSexual FROM Responses WHERE OrientacionSexual IS NOT NULL ORDER BY OrientacionSexual")).ToList();
+        options.Etnias = (await connection.QueryAsync<string>("SELECT DISTINCT GrupoEtnico FROM Responses WHERE GrupoEtnico IS NOT NULL ORDER BY GrupoEtnico")).ToList();
+        options.Categorias = (await connection.QueryAsync<string>("SELECT Name FROM Categories ORDER BY Name")).ToList();
+
+        return Ok(options);
+    }
+
+    /// <summary>
+    /// Genera los datos para la gráfica basados en filtros dinámicos.
+    /// </summary>
+    [HttpPost("chart")]
+    public async Task<ActionResult<ChartDataDto>> GetChartData([FromBody] ChartFilterDto filter)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+
+        // Construir consulta base
+        var sqlBuilder = new System.Text.StringBuilder();
+        sqlBuilder.Append(@"
+            SELECT
+                COUNT(*) as Count,
+                CASE
+                    WHEN @GroupBy = 'Sede' THEN r.Universidad
+                    WHEN @GroupBy = 'Programa' THEN r.Programa
+                    WHEN @GroupBy = 'Sexo Biológico' THEN r.SexoBiologico
+                    WHEN @GroupBy = 'Orientación Sexual' THEN r.OrientacionSexual
+                    WHEN @GroupBy = 'Grupo Étnico' THEN r.GrupoEtnico
+                    ELSE c.Name -- Categoría por defecto
+                END as GroupKey
+            FROM Responses r
+            JOIN Categories c ON r.CategoryId = c.Id
+            WHERE 1=1 ");
+
+        // Aplicar filtros
+        if (filter.Sede != "Todas") sqlBuilder.Append(" AND r.Universidad = @Sede");
+        if (filter.Programa != "Todas") sqlBuilder.Append(" AND r.Programa = @Programa");
+        if (filter.SexoBiologico != "Todas") sqlBuilder.Append(" AND r.SexoBiologico = @SexoBiologico");
+        if (filter.OrientacionSexual != "Todas") sqlBuilder.Append(" AND r.OrientacionSexual = @OrientacionSexual");
+        if (filter.GrupoEtnico != "Todas") sqlBuilder.Append(" AND r.GrupoEtnico = @GrupoEtnico");
+        if (filter.Categoria != "Todas") sqlBuilder.Append(" AND c.Name = @Categoria");
+        if (filter.QuestionId.HasValue) sqlBuilder.Append(" AND r.QuestionId = @QuestionId");
+
+        // Agrupar
+        sqlBuilder.Append(@"
+            GROUP BY
+                CASE
+                    WHEN @GroupBy = 'Sede' THEN r.Universidad
+                    WHEN @GroupBy = 'Programa' THEN r.Programa
+                    WHEN @GroupBy = 'Sexo Biológico' THEN r.SexoBiologico
+                    WHEN @GroupBy = 'Orientación Sexual' THEN r.OrientacionSexual
+                    WHEN @GroupBy = 'Grupo Étnico' THEN r.GrupoEtnico
+                    ELSE c.Name
+                END");
+
+        var data = await connection.QueryAsync<(int Count, string GroupKey)>(sqlBuilder.ToString(), new
+        {
+            filter.Sede,
+            filter.Programa,
+            filter.SexoBiologico,
+            filter.OrientacionSexual,
+            filter.GrupoEtnico,
+            filter.Categoria,
+            filter.QuestionId,
+            filter.GroupBy
+        });
+
+        var result = new ChartDataDto
+        {
+            Total = data.Sum(x => x.Count),
+            Labels = data.Select(x => x.GroupKey ?? "Sin Dato").ToList(),
+            Values = data.Select(x => x.Count).ToList()
+        };
+
+        // Construir subtítulo de filtros
+        var filtersApplied = new List<string>();
+        if (filter.Sede != "Todas") filtersApplied.Add($"Sede={filter.Sede}");
+        if (filter.Programa != "Todas") filtersApplied.Add($"Programa={filter.Programa}");
+        if (filter.SexoBiologico != "Todas") filtersApplied.Add($"Sexo={filter.SexoBiologico}");
+        if (filter.QuestionId.HasValue) filtersApplied.Add("Filtro por Pregunta Activo");
+
+        result.SubTitle = filtersApplied.Any() ? string.Join("; ", filtersApplied) : "Sin filtros adicionales";
+        result.Title = $"Distribución por {filter.GroupBy} (Total: {result.Total})";
+
+        return Ok(result);
+    }
 }
