@@ -12,6 +12,8 @@ namespace WebApi.Services;
 public interface IAuthService
 {
     Task<LoginResponseDto?> LoginAsync(LoginDto request);
+    Task<UserProfileDto?> GetProfileAsync(string username);
+    Task<bool> UpdateProfileAsync(string username, UpdateProfileDto request);
 }
 
 public class AuthService : IAuthService
@@ -44,6 +46,51 @@ public class AuthService : IAuthService
             Username = user.Username,
             Role = user.Role
         };
+    }
+
+    public async Task<UserProfileDto?> GetProfileAsync(string username)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        var user = await connection.QueryFirstOrDefaultAsync<User>(
+            "SELECT * FROM Users WHERE Username = @Username", new { Username = username });
+
+        if (user == null) return null;
+
+        return new UserProfileDto
+        {
+            Username = user.Username,
+            FullName = user.FullName,
+            Identifier = user.Identifier,
+            Role = user.Role
+        };
+    }
+
+    public async Task<bool> UpdateProfileAsync(string username, UpdateProfileDto request)
+    {
+        using var connection = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
+        var user = await connection.QueryFirstOrDefaultAsync<User>(
+            "SELECT * FROM Users WHERE Username = @Username", new { Username = username });
+
+        if (user == null) return false;
+
+        // If password change is requested
+        if (!string.IsNullOrEmpty(request.NewPassword))
+        {
+            if (string.IsNullOrEmpty(request.CurrentPassword)) return false; // Must provide current
+            if (!BCrypt.Net.BCrypt.Verify(request.CurrentPassword, user.PasswordHash)) return false; // Wrong current
+
+            string newHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            await connection.ExecuteAsync(
+                "UPDATE Users SET PasswordHash = @Hash WHERE Id = @Id",
+                new { Hash = newHash, Id = user.Id });
+        }
+
+        // Update other fields
+        await connection.ExecuteAsync(
+            "UPDATE Users SET FullName = @FullName, Identifier = @Identifier WHERE Id = @Id",
+            new { request.FullName, request.Identifier, Id = user.Id });
+
+        return true;
     }
 
     private string CreateToken(User user)

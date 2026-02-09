@@ -40,4 +40,24 @@ export class DataService {
   confirmImport(responses: PreviewResponse[], fileName: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/import/confirm`, { responses, originalFileName: fileName });
   }
+
+  // 5. Delete Response
+  deleteResponse(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/data/responses/${id}`).pipe(
+      tap(() => {
+        this.currentResponses.update(list => list.filter(r => r.id !== id));
+      })
+    );
+  }
+
+  // 6. Delete Question
+  deleteQuestion(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/data/questions/${id}`).pipe(
+      tap(() => {
+        this.questions.update(list => list.filter(q => q.id !== id));
+        // Also clear current responses if the deleted question was selected
+        this.currentResponses.set([]);
+      })
+    );
+  }
 }

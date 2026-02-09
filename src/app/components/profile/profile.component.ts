@@ -8,6 +8,7 @@ import { PasswordModule } from 'primeng/password';
 import { AvatarModule } from 'primeng/avatar';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -21,11 +22,10 @@ export class ProfileComponent {
   isEditing = false;
 
   user = {
-      name: 'Usuario Prueba',
-      email: 'prueba@udenar.edu.co',
-      phone: '',
-      studentId: '20241234567',
-      program: 'Ingeniería de Sistemas'
+      fullName: '',
+      username: '',
+      identifier: '',
+      role: ''
   };
 
   passwords = {
@@ -34,13 +34,29 @@ export class ProfileComponent {
       confirm: ''
   };
 
-  constructor(private messageService: MessageService) {}
+  constructor(private messageService: MessageService, private authService: AuthService) {}
+
+  ngOnInit() {
+      this.loadProfile();
+  }
+
+  loadProfile() {
+      this.authService.getProfile().subscribe({
+          next: (data) => {
+              this.user = data;
+          },
+          error: (err) => {
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo cargar el perfil' });
+          }
+      });
+  }
 
   toggleEdit() {
       if (this.isEditing) {
           // Cancel mode
           this.isEditing = false;
           this.passwords = { current: '', new: '', confirm: '' };
+          this.loadProfile(); // Reset changes
       } else {
           this.isEditing = true;
       }
@@ -52,12 +68,26 @@ export class ProfileComponent {
           return;
       }
 
-      this.isEditing = false;
-      this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Perfil actualizado correctamente' });
-      this.passwords = { current: '', new: '', confirm: '' };
+      const updateData = {
+          fullName: this.user.fullName,
+          identifier: this.user.identifier,
+          currentPassword: this.passwords.current,
+          newPassword: this.passwords.new
+      };
+
+      this.authService.updateProfile(updateData).subscribe({
+          next: () => {
+              this.isEditing = false;
+              this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Perfil actualizado correctamente' });
+              this.passwords = { current: '', new: '', confirm: '' };
+          },
+          error: (err) => {
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: err.error || 'Error al actualizar perfil' });
+          }
+      });
   }
 
   getInitials(name: string): string {
-      return name.substring(0, 2).toUpperCase();
+      return name ? name.substring(0, 2).toUpperCase() : 'US';
   }
 }

@@ -23,6 +23,23 @@ public class LoginResponseDto
     public string Role { get; set; } = string.Empty;
 }
 
+public class UserProfileDto
+{
+    public string Username { get; set; } = string.Empty;
+    public string FullName { get; set; } = string.Empty;
+    public string Identifier { get; set; } = string.Empty;
+    public string Role { get; set; } = string.Empty;
+}
+
+public class UpdateProfileDto
+{
+    public string FullName { get; set; } = string.Empty;
+    public string Identifier { get; set; } = string.Empty;
+    // Optional password update
+    public string? CurrentPassword { get; set; }
+    public string? NewPassword { get; set; }
+}
+
 public class ResponseDto
 {
     public int Id { get; set; }
